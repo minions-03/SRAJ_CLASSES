@@ -10,6 +10,8 @@ import {
     Phone,
     Mail,
     BookOpen,
+    MapPin,
+    GraduationCap,
     CreditCard,
     Loader2
 } from 'lucide-react';
@@ -85,7 +87,7 @@ export default function AddStudentPage() {
                                     <input
                                         name="name"
                                         required
-                                        className="input-field w-full pl-10"
+                                        className="input-field w-full pl-14"
                                         placeholder="e.g. Rahul Sharma"
                                         value={formData.name}
                                         onChange={handleChange}
@@ -120,7 +122,7 @@ export default function AddStudentPage() {
                                         type="email"
                                         name="email"
                                         required
-                                        className="input-field w-full pl-10"
+                                        className="input-field w-full pl-14"
                                         placeholder="rahul@example.com"
                                         value={formData.email}
                                         onChange={handleChange}

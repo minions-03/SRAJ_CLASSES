@@ -50,20 +50,22 @@ export function LandingNavbar() {
                     </nav>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-4">
-                        <ThemeToggle />
-                        <Link
-                            href="/login"
-                            className="btn-primary group relative overflow-hidden px-6 py-2.5 rounded-xl font-black text-sm uppercase tracking-tighter flex items-center gap-2 shadow-xl shadow-primary/20"
-                        >
-                            <span className="relative z-10">Admin Login</span>
-                            <LogIn className="h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-                        </Link>
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="hidden sm:flex items-center gap-4">
+                            <ThemeToggle />
+                            <Link
+                                href="/login"
+                                className="btn-primary group relative overflow-hidden px-6 py-2.5 rounded-xl font-black text-sm uppercase tracking-tighter flex items-center gap-2 shadow-xl shadow-primary/20"
+                            >
+                                <span className="relative z-10">Admin Login</span>
+                                <LogIn className="h-4 w-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
 
                         {/* Mobile Toggle */}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="md:hidden p-2 rounded-xl bg-muted/50 hover:bg-muted text-foreground transition-colors"
+                            className="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-foreground transition-all shadow-sm border border-black/5 dark:border-white/5"
                         >
                             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
@@ -87,10 +89,15 @@ export function LandingNavbar() {
                             {item.label}
                         </Link>
                     ))}
-                    <div className="pt-4 border-t border-white/10">
+                    <div className="pt-6 border-t border-black/5 dark:border-white/5 space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">Appearance</span>
+                            <ThemeToggle />
+                        </div>
                         <Link
                             href="/login"
-                            className="btn-primary w-full py-4 rounded-2xl font-black text-lg uppercase flex items-center justify-center gap-3"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="btn-primary w-full py-4 rounded-2xl font-black text-lg uppercase flex items-center justify-center gap-3 shadow-xl shadow-primary/30"
                         >
                             <LogIn className="h-6 w-6" />
                             Admin Login

@@ -93,7 +93,7 @@ export function EnrollmentModal({ isOpen, onClose }) {
                                             required
                                             type="text"
                                             placeholder="Enter your name"
-                                            className="input-field py-4 pl-12"
+                                            className="input-field py-4 pl-14"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         />
@@ -110,7 +110,7 @@ export function EnrollmentModal({ isOpen, onClose }) {
                                                 type="tel"
                                                 maxLength="10"
                                                 placeholder=" 00000 00000"
-                                                className="input-field py-4 pl-16"
+                                                className="input-field py-4 pl-14"
                                                 value={formData.phone.replace('+91 ', '')}
                                                 onChange={(e) => {
                                                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);

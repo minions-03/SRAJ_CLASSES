@@ -96,8 +96,10 @@ export function Navbar() {
                     </div>
 
                     {/* Right Actions */}
-                    <div className="flex items-center gap-3">
-                        <ThemeToggle />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="hidden sm:block">
+                            <ThemeToggle />
+                        </div>
 
                         <div className="relative" ref={userMenuRef}>
                             <button
@@ -128,7 +130,7 @@ export function Navbar() {
                         {/* Mobile Menu Toggle */}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="lg:hidden p-2 rounded-xl bg-muted/50 hover:bg-muted text-foreground transition-colors"
+                            className="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-foreground transition-all shadow-sm border border-black/5 dark:border-white/5"
                         >
                             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
@@ -170,6 +172,7 @@ export function Navbar() {
                                     <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-none">Management Power</p>
                                 </div>
                             </div>
+                            <ThemeToggle />
                         </div>
                         <button
                             onClick={handleLogout}
