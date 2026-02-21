@@ -87,16 +87,16 @@ export default function Dashboard() {
       <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
-            <p className="text-muted-foreground mt-1">Welcome back, SRAJ Admin. Here's what's happening today.</p>
+          <div className="text-center md:text-left">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard Overview</h1>
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">Welcome back, SRAJ Admin. Here's what's happening today.</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/students/add" className="btn-primary flex items-center gap-2 text-sm">
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
+            <Link href="/students/add" className="btn-primary flex items-center gap-2 text-xs md:text-sm px-4 md:px-6">
               <UserPlus className="h-4 w-4" />
               Add Student
             </Link>
-            <Link href="/billing" className="btn-secondary flex items-center gap-2 text-sm">
+            <Link href="/billing" className="btn-secondary flex items-center gap-2 text-xs md:text-sm px-4 md:px-6">
               <ReceiptIndianRupee className="h-4 w-4" />
               Collect Fee
             </Link>

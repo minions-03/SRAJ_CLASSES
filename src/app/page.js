@@ -68,7 +68,7 @@ export default function LandingPage() {
                             </span>
                             Admissions Open for 2026
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1]">
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1]">
                             Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">SRAJ CLASSES</span>
                         </h1>
                         <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">

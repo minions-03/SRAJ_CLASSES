@@ -14,10 +14,15 @@ const EnrollmentSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: [true, 'Please provide a phone number.'],
+        match: [/^\+91 [0-9]{10}$/, 'Please provide a valid 10-digit phone number with +91 space prefix.'],
     },
     course: {
         type: String,
         required: [true, 'Please specify the course.'],
+    },
+    address: {
+        type: String,
+        required: [true, 'Please provide an address.'],
     },
     status: {
         type: String,

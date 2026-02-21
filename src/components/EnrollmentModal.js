@@ -8,7 +8,8 @@ export function EnrollmentModal({ isOpen, onClose }) {
         name: '',
         email: '',
         phone: '',
-        course: ''
+        course: '',
+        address: ''
     });
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -49,114 +50,135 @@ export function EnrollmentModal({ isOpen, onClose }) {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="relative w-full max-w-lg bg-background glass-card border border-white/10 shadow-2xl p-8 rounded-[2.5rem] animate-in zoom-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="relative w-full max-w-lg bg-background glass-card border border-white/10 shadow-2xl !p-0 rounded-[1.5rem] sm:rounded-[2.5rem] animate-in zoom-in duration-300 max-h-[95vh] flex flex-col overflow-hidden">
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-muted transition-colors"
+                    className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all z-30 shadow-lg border border-white/20"
                 >
                     <X className="h-6 w-6" />
                 </button>
 
-                {submitted ? (
-                    <div className="text-center py-8">
-                        <div className="inline-flex p-4 rounded-full bg-green-500/10 mb-6">
-                            <CheckCircle2 className="h-16 w-16 text-green-500" />
-                        </div>
-                        <h3 className="text-3xl font-black mb-4">Application Sent!</h3>
-                        <p className="text-muted-foreground text-lg mb-8">
-                            Thank you for choosing SRAJ Classes. Our admission team will review your data and call you within 24 hours.
-                        </p>
-                        <button
-                            onClick={onClose}
-                            className="btn-primary w-full py-4 rounded-2xl font-black text-lg uppercase tracking-tight"
-                        >
-                            Got It
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        <div className="mb-8">
-                            <h3 className="text-3xl font-black mb-2">Enroll for Admission</h3>
-                            <p className="text-muted-foreground">Start your journey to success today.</p>
-                        </div>
+                <div className="overflow-y-auto p-6 sm:p-10 pt-12 sm:pt-10 flex-1">
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                                <input
-                                    required
-                                    type="text"
-                                    placeholder="Enter your name"
-                                    className="input-field py-4"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                />
+                    {submitted ? (
+                        <div className="text-center py-8">
+                            <div className="inline-flex p-4 rounded-full bg-green-500/10 mb-6">
+                                <CheckCircle2 className="h-16 w-16 text-green-500" />
                             </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number</label>
-                                    <input
-                                        required
-                                        type="tel"
-                                        placeholder="+91 00000 00000"
-                                        className="input-field py-4"
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
-                                    <input
-                                        required
-                                        type="email"
-                                        placeholder="your@email.com"
-                                        className="input-field py-4"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Select Course</label>
-                                <select
-                                    required
-                                    className="input-field py-4 appearance-none cursor-pointer"
-                                    value={formData.course}
-                                    onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                                >
-                                    <option value="">Select a batch</option>
-                                    {courses.map(c => (
-                                        <option key={c} value={c}>{c}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {error && (
-                                <p className="text-red-500 text-sm font-bold text-center bg-red-500/10 py-3 rounded-xl">
-                                    {error}
-                                </p>
-                            )}
-
+                            <h3 className="text-3xl font-black mb-4">Application Sent!</h3>
+                            <p className="text-muted-foreground text-lg mb-8">
+                                Thank you for choosing SRAJ Classes. Our admission team will review your data and call you within 24 hours.
+                            </p>
                             <button
-                                type="submit"
-                                disabled={loading}
-                                className="btn-primary w-full py-5 rounded-2xl font-black text-xl uppercase tracking-tighter shadow-xl shadow-primary/30 flex items-center justify-center gap-3 active:scale-95 transition-all"
+                                onClick={onClose}
+                                className="btn-primary w-full py-4 rounded-2xl font-black text-lg uppercase tracking-tight"
                             >
-                                {loading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
-                                ) : (
-                                    <>
-                                        Submit Application
-                                        <Send className="h-5 w-5" />
-                                    </>
-                                )}
+                                Got It
                             </button>
-                        </form>
-                    </>
-                )}
+                        </div>
+                    ) : (
+                        <>
+                            <div className="mb-6 sm:mb-8">
+                                <h3 className="text-2xl sm:text-3xl font-black mb-2">Enroll for Admission</h3>
+                                <p className="text-sm sm:text-base text-muted-foreground">Start your journey to success today.</p>
+                            </div>
+
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
+                                    <input
+                                        required
+                                        type="text"
+                                        placeholder="Enter your name"
+                                        className="input-field py-4"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number (10 Digits)</label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">+91 </span>
+                                            <input
+                                                required
+                                                type="tel"
+                                                maxLength="10"
+                                                placeholder="00000 00000"
+                                                className="input-field py-4 pl-14"
+                                                value={formData.phone.replace('+91 ', '')}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                                    setFormData({ ...formData, phone: val ? `+91 ${val}` : '' });
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
+                                        <input
+                                            required
+                                            type="email"
+                                            placeholder="your@email.com"
+                                            className="input-field py-4"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Select Course</label>
+                                    <select
+                                        required
+                                        className="input-field py-4 appearance-none cursor-pointer"
+                                        value={formData.course}
+                                        onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+                                    >
+                                        <option value="">Select a batch</option>
+                                        {courses.map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full Address</label>
+                                    <textarea
+                                        required
+                                        placeholder="Enter your permanent/present address"
+                                        className="input-field py-4 min-h-[100px] resize-none"
+                                        value={formData.address}
+                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                    />
+                                </div>
+
+                                {error && (
+                                    <p className="text-red-500 text-sm font-bold text-center bg-red-500/10 py-3 rounded-xl">
+                                        {error}
+                                    </p>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="btn-primary w-full py-5 rounded-2xl font-black text-xl uppercase tracking-tighter shadow-xl shadow-primary/30 flex items-center justify-center gap-3 active:scale-95 transition-all"
+                                >
+                                    {loading ? (
+                                        <Loader2 className="h-6 w-6 animate-spin" />
+                                    ) : (
+                                        <>
+                                            Submit Application
+                                            <Send className="h-5 w-5" />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

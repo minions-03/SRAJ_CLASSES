@@ -38,6 +38,7 @@ export async function PATCH(request) {
                 email: enrollment.email,
                 phone: enrollment.phone,
                 course: enrollment.course,
+                address: enrollment.address,
                 enrollmentDate: new Date(),
                 status: 'Active'
             });

@@ -8,9 +8,18 @@ export async function POST(request) {
         const data = await request.json();
 
         // Basic validation
-        if (!data.name || !data.phone || !data.course || !data.email) {
+        if (!data.name || !data.phone || !data.course || !data.email || !data.address) {
             return NextResponse.json(
-                { success: false, message: 'Please provide all required fields (Name, Phone, Email, Course).' },
+                { success: false, message: 'Please provide all required fields (Name, Phone, Email, Address, Course).' },
+                { status: 400 }
+            );
+        }
+
+        // Phone validation
+        const phoneRegex = /^\+91 [0-9]{10}$/;
+        if (!phoneRegex.test(data.phone)) {
+            return NextResponse.json(
+                { success: false, message: 'Please provide a valid 10-digit phone number with +91 space prefix.' },
                 { status: 400 }
             );
         }

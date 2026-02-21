@@ -23,6 +23,7 @@ export default function AddStudentPage() {
         email: '',
         phone: '',
         course: '',
+        address: '',
         status: 'Active'
     });
 
@@ -95,14 +96,18 @@ export default function AddStudentPage() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Phone Number *</label>
                                 <div className="relative">
-                                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">+91 </span>
                                     <input
                                         name="phone"
                                         required
-                                        className="input-field w-full pl-10"
-                                        placeholder="+91 98765 43210"
-                                        value={formData.phone}
-                                        onChange={handleChange}
+                                        maxLength="10"
+                                        className="input-field w-full pl-14"
+                                        placeholder="98765 43210"
+                                        value={formData.phone.replace('+91 ', '')}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                            setFormData(prev => ({ ...prev, phone: val ? `+91 ${val}` : '' }));
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -151,6 +156,18 @@ export default function AddStudentPage() {
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Permanent Address *</label>
+                                <textarea
+                                    name="address"
+                                    required
+                                    className="input-field w-full min-h-[80px] py-3"
+                                    placeholder="Enter complete address..."
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                />
                             </div>
 
                             <div className="space-y-2">
