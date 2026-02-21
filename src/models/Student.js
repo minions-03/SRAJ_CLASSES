@@ -13,6 +13,7 @@ const StudentSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        required: [true, 'Please provide an email address.'],
         maxlength: [100, 'Email cannot be more than 100 characters'],
     },
     phone: {

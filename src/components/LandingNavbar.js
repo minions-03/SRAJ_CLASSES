@@ -31,8 +31,8 @@ export function LandingNavbar() {
                         <div className="p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-all duration-300">
                             <GraduationCap className="h-8 w-8 text-primary" />
                         </div>
-                        <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                            SRAJ <span className="text-primary">CLASSES</span>
+                        <span className="text-2xl font-black tracking-tight">
+                            <span className="logo-text">SRAJ</span> <span className="text-primary">CLASSES</span>
                         </span>
                     </Link>
 

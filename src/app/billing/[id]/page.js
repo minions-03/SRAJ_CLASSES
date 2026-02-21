@@ -75,11 +75,15 @@ export default function InvoiceDetailPage() {
                         <p className="text-xs text-slate-500 mt-2 max-w-[200px]">
                             Quality Education for Competitive Exams. SSC, Banking, Railway & More.
                         </p>
+                        <div className="mt-3 space-y-0.5">
+                            <p className="text-[10px] font-bold text-slate-400 leading-none tracking-tight">Email: Srajgs2025@gmail.com</p>
+                            <p className="text-[10px] font-bold text-slate-400 leading-none tracking-tight">Call: +91 91556 91893</p>
+                        </div>
                     </div>
                     <div className="text-right">
                         <h2 className="text-xl font-bold uppercase tracking-wider text-slate-400">Fee Receipt</h2>
                         <p className="text-sm font-medium mt-1">No: <span className="font-mono text-slate-900">{invoice.invoiceNumber}</span></p>
-                        <p className="text-sm text-slate-500 mt-1">Date: {new Date(invoice.paymentDate).toLocaleDateString('en-IN')}</p>
+                        <p className="text-sm text-slate-500 mt-1">Date: {new Date(invoice.paymentDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
                     </div>
                 </div>
 

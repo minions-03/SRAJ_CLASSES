@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { LandingNavbar } from '@/components/LandingNavbar';
+import { EnrollmentModal } from '@/components/EnrollmentModal';
 import {
     GraduationCap,
     BookOpen,
@@ -12,41 +13,43 @@ import {
     CheckCircle2,
     Users,
     Zap,
-    IndianRupee
+    FileText
 } from 'lucide-react';
 
 const courses = [
     {
         title: "SSC CGL / CHSL",
         description: "Comprehensive coaching for Combined Graduate Level and Combined Higher Secondary Level exams.",
-        icon: Target,
+        icon: FileText,
         color: "from-blue-500 to-indigo-600",
         tag: "Most Popular"
     },
     {
         title: "Banking Exams",
         description: "Expert guidance for IBPS PO, Clerk, SBI, and other nationalized bank competitive exams.",
-        icon: IndianRupee,
+        icon: BookOpen,
         color: "from-green-500 to-emerald-600",
         tag: "In Demand"
     },
     {
         title: "Railway (RRB)",
         description: "Targeted preparation for RRB NTPC, Group D, and other railway recruitment boards.",
-        icon: Zap,
+        icon: GraduationCap,
         color: "from-amber-500 to-orange-600",
         tag: "Fast Track"
     },
     {
         title: "Police / Defense",
         description: "Specialized training for State Police, CAPF, and other defense entrance examinations.",
-        icon: Award,
+        icon: CheckCircle2,
         color: "from-rose-500 to-pink-600",
         tag: "Goal Oriented"
     }
 ];
 
 export default function LandingPage() {
+    const [isEnrollOpen, setIsEnrollOpen] = React.useState(false);
+
     return (
         <div className="min-h-screen bg-background">
             <LandingNavbar />
@@ -72,10 +75,13 @@ export default function LandingPage() {
                             Transform your aspirations into achievements. We provide world-class coaching for SSC, Banking, Railways, and more with expert mentors and a proven track record.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link href="#courses" className="btn-primary px-8 py-4 rounded-2xl text-lg font-black uppercase tracking-tight flex items-center gap-2 group w-full sm:w-auto">
-                                Explore Courses
+                            <button
+                                onClick={() => setIsEnrollOpen(true)}
+                                className="btn-primary px-8 py-4 rounded-2xl text-lg font-black uppercase tracking-tight flex items-center gap-2 group w-full sm:w-auto cursor-pointer"
+                            >
+                                Enroll Now
                                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
+                            </button>
                             <Link href="#contact" className="btn-secondary px-8 py-4 rounded-2xl text-lg font-bold w-full sm:w-auto">
                                 Contact Us
                             </Link>
@@ -113,7 +119,7 @@ export default function LandingPage() {
             <section id="courses" className="py-24 bg-muted/30">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Our Premium Programs</h2>
+                        <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Our Running Batches</h2>
                         <p className="text-muted-foreground text-lg">Specially designed curriculum to help you crack the toughest exams.</p>
                     </div>
 
@@ -135,9 +141,6 @@ export default function LandingPage() {
                                 <p className="text-sm text-muted-foreground leading-relaxed flex-1">
                                     {course.description}
                                 </p>
-                                <button className="mt-8 flex items-center gap-2 text-sm font-black text-primary group-hover:gap-3 transition-all uppercase tracking-tighter">
-                                    Learn More <ArrowRight className="h-4 w-4" />
-                                </button>
                             </div>
                         ))}
                     </div>
@@ -200,11 +203,16 @@ export default function LandingPage() {
                     <p className="text-white/80 text-xl mb-12 max-w-2xl mx-auto">
                         Don't wait for the right moment. Create it. Join our next batch and start your journey towards a government job.
                     </p>
-                    <button className="bg-white text-primary px-12 py-5 rounded-2xl text-xl font-black uppercase tracking-tight hover:scale-105 transition-transform shadow-2xl shadow-black/20">
-                        Enroll Now for Free Demo
+                    <button
+                        onClick={() => setIsEnrollOpen(true)}
+                        className="bg-white text-primary px-12 py-5 rounded-2xl text-xl font-black uppercase tracking-tight hover:scale-105 transition-transform shadow-2xl shadow-black/20 cursor-pointer"
+                    >
+                        Enroll for Admission
                     </button>
                 </div>
             </section>
+
+            <EnrollmentModal isOpen={isEnrollOpen} onClose={() => setIsEnrollOpen(false)} />
 
             {/* Footer */}
             <footer className="py-20 bg-slate-950 text-white">
@@ -232,8 +240,8 @@ export default function LandingPage() {
                         <h4 className="text-lg font-black mb-6 uppercase tracking-widest text-primary">Contact</h4>
                         <ul className="space-y-4 text-muted-foreground font-bold text-sm">
                             <li>Patna, Bihar, India</li>
-                            <li>info@srajclasses.com</li>
-                            <li>+91 98765 43210</li>
+                            <li>Srajgs2025@gmail.com</li>
+                            <li>+91 91556 91893</li>
                         </ul>
                     </div>
                 </div>

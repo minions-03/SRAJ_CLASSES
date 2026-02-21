@@ -9,6 +9,7 @@ import {
   Clock,
   ArrowUpRight,
   UserPlus,
+  GraduationCap,
   Loader2
 } from 'lucide-react';
 import Link from 'next/link';
@@ -69,6 +70,15 @@ export default function Dashboard() {
       color: 'text-purple-500',
       bg: 'bg-purple-500/10',
       trend: 'This month'
+    },
+    {
+      label: 'Pending Applications',
+      value: stats?.pendingApplications || 0,
+      icon: GraduationCap,
+      color: 'text-orange-500',
+      bg: 'bg-orange-500/10',
+      trend: 'Awaiting review',
+      href: '/dashboard/enrollments'
     }
   ];
 
@@ -94,14 +104,17 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map((stat, index) => (
-            <div key={index} className="glass-card flex flex-col justify-between">
+            <div key={index} className="glass-card flex flex-col justify-between relative group">
+              {stat.href && (
+                <Link href={stat.href} className="absolute inset-0 z-10" />
+              )}
               <div className="flex items-start justify-between">
                 <div className={`${stat.bg} p-3 rounded-xl`}>
                   <stat.icon className={`h-6 w-6 ${stat.color}`} />
                 </div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
                   {stat.trend}
                 </div>
               </div>
@@ -147,7 +160,7 @@ export default function Dashboard() {
                         <td className="py-4 text-xs font-medium text-slate-500">
                           {new Date(student.createdAt).toLocaleDateString('en-IN', {
                             day: '2-digit',
-                            month: 'short',
+                            month: '2-digit',
                             year: 'numeric'
                           })}
                         </td>

@@ -109,6 +109,16 @@
   transform: scale(1.01);
 }
 
+.logo-text {
+  color: #0f172a !important;
+  /* Force dark navy in light mode */
+}
+
+.dark .logo-text {
+  color: #f8fafc !important;
+  /* Force off-white in dark mode */
+}
+
 .nav-blur {
   position: sticky;
   top: 0;

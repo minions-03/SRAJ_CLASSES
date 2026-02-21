@@ -2,15 +2,17 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Student from '@/models/Student';
 import Invoice from '@/models/Invoice';
+import Enrollment from '@/models/Enrollment';
 
 export async function GET() {
     await dbConnect();
 
     try {
-        const [totalStudents, invoices, recentStudents] = await Promise.all([
+        const [totalStudents, invoices, recentStudents, pendingApplications] = await Promise.all([
             Student.countDocuments(),
             Invoice.find({}),
-            Student.find().sort({ createdAt: -1 }).limit(5)
+            Student.find().sort({ createdAt: -1 }).limit(5),
+            Enrollment.countDocuments({ status: 'Pending' })
         ]);
 
         const totalFeesCollected = invoices.reduce((sum, inv) => sum + inv.amount, 0);
@@ -29,7 +31,7 @@ export async function GET() {
                 totalFeesCollected,
                 monthlyCollection,
                 recentStudents,
-                // We'll calculate target and dues as mock for now or extend models later if needed
+                pendingApplications,
                 target: 200000,
                 pendingDues: 0
             }

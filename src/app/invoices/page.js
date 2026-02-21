@@ -129,7 +129,7 @@ export default function InvoicesPage() {
                                                 <div className="text-[11px] font-medium text-slate-500">
                                                     {new Date(inv.paymentDate).toLocaleDateString('en-IN', {
                                                         day: '2-digit',
-                                                        month: 'short',
+                                                        month: '2-digit',
                                                         year: 'numeric'
                                                     })}
                                                 </div>
