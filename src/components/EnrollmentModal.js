@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, CheckCircle2, Loader2, Send } from 'lucide-react';
+import { X, CheckCircle2, Loader2, Send, User, Mail, BookOpen, MapPin, Phone } from 'lucide-react';
 
 export function EnrollmentModal({ isOpen, onClose }) {
     const [formData, setFormData] = useState({
@@ -87,27 +87,30 @@ export function EnrollmentModal({ isOpen, onClose }) {
                             <form onSubmit={handleSubmit} className="space-y-5">
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                                    <input
-                                        required
-                                        type="text"
-                                        placeholder="Enter your name"
-                                        className="input-field py-4"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                        <input
+                                            required
+                                            type="text"
+                                            placeholder="Enter your name"
+                                            className="input-field py-4 pl-12"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number (10 Digits)</label>
+                                        <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number</label>
                                         <div className="relative">
                                             <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">+91 </span>
                                             <input
                                                 required
                                                 type="tel"
                                                 maxLength="10"
-                                                placeholder="00000 00000"
-                                                className="input-field py-4 pl-14"
+                                                placeholder=" 00000 00000"
+                                                className="input-field py-4 pl-16"
                                                 value={formData.phone.replace('+91 ', '')}
                                                 onChange={(e) => {
                                                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -118,41 +121,50 @@ export function EnrollmentModal({ isOpen, onClose }) {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
-                                        <input
-                                            required
-                                            type="email"
-                                            placeholder="your@email.com"
-                                            className="input-field py-4"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        />
+                                        <div className="relative">
+                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                            <input
+                                                required
+                                                type="email"
+                                                placeholder="your@email.com"
+                                                className="input-field py-4 pl-14"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Select Course</label>
-                                    <select
-                                        required
-                                        className="input-field py-4 appearance-none cursor-pointer"
-                                        value={formData.course}
-                                        onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                                    >
-                                        <option value="">Select a batch</option>
-                                        {courses.map(c => (
-                                            <option key={c} value={c}>{c}</option>
-                                        ))}
-                                    </select>
+                                    <div className="relative">
+                                        <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
+                                        <select
+                                            required
+                                            className="input-field py-4 pl-14 appearance-none cursor-pointer"
+                                            value={formData.course}
+                                            onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+                                        >
+                                            <option value="">Select a batch</option>
+                                            {courses.map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full Address</label>
-                                    <textarea
-                                        required
-                                        placeholder="Enter your permanent/present address"
-                                        className="input-field py-4 min-h-[100px] resize-none"
-                                        value={formData.address}
-                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <MapPin className="absolute left-4 top-5 h-5 w-5 text-muted-foreground" />
+                                        <textarea
+                                            required
+                                            placeholder="Enter your permanent/present address"
+                                            className="input-field py-4 pl-14 min-h-[100px] resize-none"
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
 
                                 {error && (

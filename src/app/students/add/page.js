@@ -102,7 +102,7 @@ export default function AddStudentPage() {
                                         required
                                         maxLength="10"
                                         className="input-field w-full pl-14"
-                                        placeholder="98765 43210"
+                                        placeholder=" 00000 00000"
                                         value={formData.phone.replace('+91 ', '')}
                                         onChange={(e) => {
                                             const val = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -143,7 +143,7 @@ export default function AddStudentPage() {
                                     <select
                                         name="course"
                                         required
-                                        className="input-field w-full pl-10 appearance-none bg-background cursor-pointer"
+                                        className="input-field w-full pl-14 appearance-none bg-background cursor-pointer"
                                         value={formData.course}
                                         onChange={handleChange}
                                     >
@@ -160,14 +160,17 @@ export default function AddStudentPage() {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Permanent Address *</label>
-                                <textarea
-                                    name="address"
-                                    required
-                                    className="input-field w-full min-h-[80px] py-3"
-                                    placeholder="Enter complete address..."
-                                    value={formData.address}
-                                    onChange={handleChange}
-                                />
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-4 h-4 w-4 text-muted-foreground" />
+                                    <textarea
+                                        name="address"
+                                        required
+                                        className="input-field w-full min-h-[80px] py-3 pl-14"
+                                        placeholder="Enter complete address..."
+                                        value={formData.address}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
