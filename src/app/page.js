@@ -1,182 +1,246 @@
 'use client';
 
 import React from 'react';
-import { DashboardLayout } from '@/components/DashboardLayout';
-import {
-  Users,
-  ReceiptIndianRupee,
-  TrendingUp,
-  Clock,
-  ArrowUpRight,
-  UserPlus
-} from 'lucide-react';
 import Link from 'next/link';
+import { LandingNavbar } from '@/components/LandingNavbar';
+import {
+    GraduationCap,
+    BookOpen,
+    Target,
+    Award,
+    ArrowRight,
+    CheckCircle2,
+    Users,
+    Zap,
+    IndianRupee
+} from 'lucide-react';
 
-const stats = [
-  {
-    label: 'Total Students',
-    value: '124',
-    icon: Users,
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
-    trend: '+12%',
-    trendColor: 'text-green-500'
-  },
-  {
-    label: 'Fees Collected',
-    value: '₹4,50,000',
-    icon: ReceiptIndianRupee,
-    color: 'text-green-500',
-    bg: 'bg-green-500/10',
-    trend: '+8%',
-    trendColor: 'text-green-500'
-  },
-  {
-    label: 'Pending Dues',
-    value: '₹85,000',
-    icon: Clock,
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
-    trend: '-5%',
-    trendColor: 'text-amber-500'
-  },
-  {
-    label: 'New Enrolments',
-    value: '18',
-    icon: UserPlus,
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
-    trend: '+15%',
-    trendColor: 'text-green-500'
-  },
+const courses = [
+    {
+        title: "SSC CGL / CHSL",
+        description: "Comprehensive coaching for Combined Graduate Level and Combined Higher Secondary Level exams.",
+        icon: Target,
+        color: "from-blue-500 to-indigo-600",
+        tag: "Most Popular"
+    },
+    {
+        title: "Banking Exams",
+        description: "Expert guidance for IBPS PO, Clerk, SBI, and other nationalized bank competitive exams.",
+        icon: IndianRupee,
+        color: "from-green-500 to-emerald-600",
+        tag: "In Demand"
+    },
+    {
+        title: "Railway (RRB)",
+        description: "Targeted preparation for RRB NTPC, Group D, and other railway recruitment boards.",
+        icon: Zap,
+        color: "from-amber-500 to-orange-600",
+        tag: "Fast Track"
+    },
+    {
+        title: "Police / Defense",
+        description: "Specialized training for State Police, CAPF, and other defense entrance examinations.",
+        icon: Award,
+        color: "from-rose-500 to-pink-600",
+        tag: "Goal Oriented"
+    }
 ];
 
-export default function Dashboard() {
-  return (
-    <DashboardLayout>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
-            <p className="text-muted-foreground mt-1">Welcome back, SRAJ Admin. Here's what's happening today.</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/students/add" className="btn-primary flex items-center gap-2 text-sm">
-              <UserPlus className="h-4 w-4" />
-              Add Student
-            </Link>
-            <Link href="/billing" className="btn-secondary flex items-center gap-2 text-sm">
-              <ReceiptIndianRupee className="h-4 w-4" />
-              Collect Fee
-            </Link>
-          </div>
-        </div>
+export default function LandingPage() {
+    return (
+        <div className="min-h-screen bg-background">
+            <LandingNavbar />
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <div key={index} className="glass-card flex flex-col justify-between">
-              <div className="flex items-start justify-between">
-                <div className={`${stat.bg} p-3 rounded-xl`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
-                </div>
-                <div className={`flex items-center gap-1 text-xs font-medium ${stat.trendColor}`}>
-                  <TrendingUp className="h-3 w-3" />
-                  {stat.trend}
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-                <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
+            {/* Hero Section */}
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl animate-pulse delay-1000" />
 
-        {/* Main Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Activity */}
-          <div className="lg:col-span-2 glass-card">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold">Recent Registrations</h2>
-              <Link href="/students" className="text-sm text-primary hover:underline flex items-center gap-1">
-                View all <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-border/50 text-muted-foreground text-sm">
-                    <th className="pb-3 font-medium">Student Name</th>
-                    <th className="pb-3 font-medium">Course</th>
-                    <th className="pb-3 font-medium">Date</th>
-                    <th className="pb-3 font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/50">
-                  {[
-                    { name: 'Rahul Kumar', course: 'SSC CGL', date: 'Oct 24, 2023', status: 'Active' },
-                    { name: 'Anjali Sharma', course: 'Banking', date: 'Oct 23, 2023', status: 'Active' },
-                    { name: 'Vikram Singh', course: 'Railway', date: 'Oct 22, 2023', status: 'Active' },
-                    { name: 'Priya Verma', course: 'SSC CHSL', date: 'Oct 21, 2023', status: 'Active' },
-                  ].map((row, i) => (
-                    <tr key={i} className="group hover:bg-muted/30 transition-colors">
-                      <td className="py-4 font-medium">{row.name}</td>
-                      <td className="py-4 text-sm">{row.course}</td>
-                      <td className="py-4 text-sm text-muted-foreground">{row.date}</td>
-                      <td className="py-4">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/10 text-green-500">
-                          {row.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Quick Actions / Summary */}
-          <div className="space-y-6">
-            <div className="glass-card bg-primary/5 border-primary/20">
-              <h2 className="text-xl font-bold mb-4">Quick Stats</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Collection (This Month)</span>
-                  <span className="font-bold text-green-500">₹1,20,000</span>
-                </div>
-                <div className="w-full bg-border/50 rounded-full h-1.5">
-                  <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '75%' }}></div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Target</span>
-                  <span className="font-bold">₹1,60,000</span>
-                </div>
-              </div>
-              <button className="btn-primary w-full mt-6 text-sm">Download Monthly Report</button>
-            </div>
-
-            <div className="glass-card">
-              <h2 className="text-xl font-bold mb-4">Upcoming Due Dates</h2>
-              <div className="space-y-4">
-                {[
-                  { name: 'Amit Jha', due: '₹5,000', date: 'In 2 days' },
-                  { name: 'Suman Roy', due: '₹3,500', date: 'In 3 days' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <div>
-                      <p className="text-sm font-medium">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.date}</p>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="text-center max-w-4xl mx-auto">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black uppercase tracking-widest mb-6 animate-fade-in">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                            </span>
+                            Admissions Open for 2026
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1]">
+                            Master Your Future with <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">SRAJ CLASSES</span>
+                        </h1>
+                        <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">
+                            Transform your aspirations into achievements. We provide world-class coaching for SSC, Banking, Railways, and more with expert mentors and a proven track record.
+                        </p>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <Link href="#courses" className="btn-primary px-8 py-4 rounded-2xl text-lg font-black uppercase tracking-tight flex items-center gap-2 group w-full sm:w-auto">
+                                Explore Courses
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                            <Link href="#contact" className="btn-secondary px-8 py-4 rounded-2xl text-lg font-bold w-full sm:w-auto">
+                                Contact Us
+                            </Link>
+                        </div>
                     </div>
-                    <span className="font-bold text-amber-500 text-sm">{item.due}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                </div>
+            </section>
+
+            {/* Advertisement Section - Creative Stats/Ads */}
+            <section className="py-20 relative overflow-hidden bg-slate-900 text-white">
+                <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                        <div className="space-y-2">
+                            <h3 className="text-4xl font-black text-primary">5000+</h3>
+                            <p className="text-sm font-bold uppercase tracking-widest opacity-60">Students Placed</p>
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-4xl font-black text-primary">15+</h3>
+                            <p className="text-sm font-bold uppercase tracking-widest opacity-60">Expert Faculty</p>
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-4xl font-black text-primary">98%</h3>
+                            <p className="text-sm font-bold uppercase tracking-widest opacity-60">Success Rate</p>
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-4xl font-black text-primary">24/7</h3>
+                            <p className="text-sm font-bold uppercase tracking-widest opacity-60">Student Support</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Courses Section */}
+            <section id="courses" className="py-24 bg-muted/30">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Our Premium Programs</h2>
+                        <p className="text-muted-foreground text-lg">Specially designed curriculum to help you crack the toughest exams.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {courses.map((course, index) => (
+                            <div key={index} className="glass-card group hover:scale-[1.02] transition-all duration-300 flex flex-col h-full border-none shadow-xl">
+                                <div className={`h-2 w-full bg-gradient-to-r ${course.color} absolute top-0 left-0 rounded-t-xl`} />
+                                <div className="mt-4 mb-6">
+                                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${course.color} w-fit shadow-lg shadow-primary/20`}>
+                                        <course.icon className="h-8 w-8 text-white" />
+                                    </div>
+                                </div>
+                                <div className="inline-flex mb-4">
+                                    <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 bg-primary/10 text-primary rounded">
+                                        {course.tag}
+                                    </span>
+                                </div>
+                                <h3 className="text-xl font-black mb-3">{course.title}</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed flex-1">
+                                    {course.description}
+                                </p>
+                                <button className="mt-8 flex items-center gap-2 text-sm font-black text-primary group-hover:gap-3 transition-all uppercase tracking-tighter">
+                                    Learn More <ArrowRight className="h-4 w-4" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Creative Advertisement / Why Us */}
+            <section className="py-24 border-y border-white/5">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                        <div className="flex-1 space-y-8">
+                            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">
+                                WHY HUNDREDS OF <span className="text-primary italic">WINNERS</span> CHOOSE US?
+                            </h2>
+                            <div className="grid sm:grid-cols-2 gap-6">
+                                {[
+                                    { title: "Personalized Mentorship", desc: "One-on-one attention for every student." },
+                                    { title: "Smart Test Series", desc: "Real-time exam simulation and analysis." },
+                                    { title: "Modern Infrastructure", desc: "Digital classrooms with hybrid learning." },
+                                    { title: "Updated Study Material", desc: "Comprehensive notes updated weekly." },
+                                ].map((item, i) => (
+                                    <div key={i} className="flex gap-4">
+                                        <div className="flex-shrink-0 mt-1">
+                                            <CheckCircle2 className="h-6 w-6 text-primary" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-lg mb-1">{item.title}</h4>
+                                            <p className="text-sm text-muted-foreground leading-snug">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex-1 relative w-full aspect-square md:aspect-video lg:aspect-square">
+                            <div className="absolute inset-4 rounded-3xl bg-primary/20 animate-pulse blur-2xl" />
+                            <div className="relative h-full w-full glass rounded-[2.5rem] border border-white/20 p-8 flex flex-col justify-center items-center text-center overflow-hidden">
+                                <div className="absolute top-0 right-0 p-8">
+                                    <Award className="h-20 w-20 text-primary opacity-20 rotate-12" />
+                                </div>
+                                <GraduationCap className="h-24 w-24 text-primary mb-6" />
+                                <h3 className="text-4xl font-black mb-4">India's Leading Coaching Center</h3>
+                                <p className="text-lg text-muted-foreground mb-8">Join the league of extraordinary achievers today.</p>
+                                <div className="flex flex-wrap justify-center gap-4">
+                                    <div className="px-4 py-2 glass-card rounded-xl text-xs font-bold uppercase tracking-widest border-primary/20">SSC Expert</div>
+                                    <div className="px-4 py-2 glass-card rounded-xl text-xs font-bold uppercase tracking-widest border-primary/20">Banking Guru</div>
+                                    <div className="px-4 py-2 glass-card rounded-xl text-xs font-bold uppercase tracking-widest border-primary/20">RLY Specialist</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA Final */}
+            <section className="py-24 bg-primary">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter">
+                        READY TO CRACK YOUR EXAM?
+                    </h2>
+                    <p className="text-white/80 text-xl mb-12 max-w-2xl mx-auto">
+                        Don't wait for the right moment. Create it. Join our next batch and start your journey towards a government job.
+                    </p>
+                    <button className="bg-white text-primary px-12 py-5 rounded-2xl text-xl font-black uppercase tracking-tight hover:scale-105 transition-transform shadow-2xl shadow-black/20">
+                        Enroll Now for Free Demo
+                    </button>
+                </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="py-20 bg-slate-950 text-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
+                    <div className="col-span-1 md:col-span-2 space-y-6">
+                        <Link href="/" className="flex items-center gap-2">
+                            <GraduationCap className="h-10 w-10 text-primary" />
+                            <span className="text-3xl font-black tracking-tight">
+                                SRAJ <span className="text-primary">CLASSES</span>
+                            </span>
+                        </Link>
+                        <p className="text-muted-foreground text-lg leading-relaxed max-w-md">
+                            Empowering the next generation of government officers with quality education and expert mentorship.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="text-lg font-black mb-6 uppercase tracking-widest text-primary">Links</h4>
+                        <ul className="space-y-4 text-muted-foreground font-bold">
+                            <li><Link href="#" className="hover:text-primary transition-colors">Home</Link></li>
+                            <li><Link href="#courses" className="hover:text-primary transition-colors">Courses</Link></li>
+                            <li><Link href="/login" className="hover:text-primary transition-colors">Admin Login</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="text-lg font-black mb-6 uppercase tracking-widest text-primary">Contact</h4>
+                        <ul className="space-y-4 text-muted-foreground font-bold text-sm">
+                            <li>Patna, Bihar, India</li>
+                            <li>info@srajclasses.com</li>
+                            <li>+91 98765 43210</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pt-8 border-t border-white/10 text-center text-muted-foreground text-xs uppercase font-black tracking-[0.2em]">
+                    © 2026 SRAJ CLASSES MANAGEMENT SYSTEM • BUILT FOR SUCCESS
+                </div>
+            </footer>
         </div>
-      </div>
-    </DashboardLayout>
-  );
+    );
 }
