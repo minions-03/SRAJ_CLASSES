@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, Loader2, Send, User, Mail, BookOpen, MapPin, Phone } from 'lucide-react';
 
 export function EnrollmentModal({ isOpen, onClose }) {
@@ -21,6 +21,16 @@ export function EnrollmentModal({ isOpen, onClose }) {
         "Railway (RRB)",
         "Police / Defense"
     ];
+
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isOpen]);
 
     if (!isOpen) return null;
 

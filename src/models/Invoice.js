@@ -31,8 +31,24 @@ const InvoiceSchema = new mongoose.Schema({
         unique: true,
         required: [true, 'Please provide an invoice number.'],
     },
+    feeType: {
+        type: String,
+        enum: ['Tuition Fees', 'Library Fees', 'Admission Fees', 'Combined'],
+        default: 'Tuition Fees',
+    },
+    // Used when feeType === 'Combined' — stores individual line items
+    feeBreakdown: [
+        {
+            label: { type: String },
+            amount: { type: Number },
+        },
+    ],
 }, {
     timestamps: true,
 });
+
+// Indexes for faster queries
+InvoiceSchema.index({ studentId: 1 });
+InvoiceSchema.index({ paymentDate: -1 });
 
 export default mongoose.models.Invoice || mongoose.model('Invoice', InvoiceSchema);

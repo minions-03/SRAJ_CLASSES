@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import {
     Users,
@@ -12,39 +12,73 @@ import {
     MoreVertical,
     ChevronLeft,
     ChevronRight,
-    Loader2
+    Loader2,
+    X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
+const LIMIT = 10;
+
 export default function StudentsPage() {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchInput, setSearchInput] = useState('');   // what user is typing
+    const [appliedSearch, setAppliedSearch] = useState(''); // what we actually query
+    const [pagination, setPagination] = useState({ total: 0, page: 1, totalPages: 1 });
 
-    useEffect(() => {
-        fetchStudents();
-    }, []);
-
-    const fetchStudents = async () => {
+    // Fetch whenever page or applied search changes
+    const fetchStudents = useCallback(async (page, search) => {
+        setLoading(true);
         try {
-            const res = await fetch('/api/students');
+            const params = new URLSearchParams({ page, limit: LIMIT });
+            if (search) params.set('search', search);
+            const res = await fetch(`/api/students?${params}`);
             const json = await res.json();
             if (json.success) {
                 setStudents(json.data);
+                setPagination(json.pagination);
             }
         } catch (error) {
             console.error('Failed to fetch students:', error);
         } finally {
             setLoading(false);
         }
+    }, []);
+
+    useEffect(() => {
+        fetchStudents(pagination.page, appliedSearch);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pagination.page, appliedSearch]);
+
+    // Trigger search only on Enter key; auto-reset when input is cleared
+    const handleSearchKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            setAppliedSearch(searchInput.trim());
+            setPagination((prev) => ({ ...prev, page: 1 }));
+        }
     };
 
-    const filteredStudents = students.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.course.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handleSearchChange = (e) => {
+        const val = e.target.value;
+        setSearchInput(val);
+        if (val === '') {
+            setAppliedSearch('');
+            setPagination((prev) => ({ ...prev, page: 1 }));
+        }
+    };
+
+    // Clear search
+    const clearSearch = () => {
+        setSearchInput('');
+        setAppliedSearch('');
+        setPagination((prev) => ({ ...prev, page: 1 }));
+    };
+
+    const goToPage = (newPage) => {
+        if (newPage < 1 || newPage > pagination.totalPages) return;
+        setPagination((prev) => ({ ...prev, page: newPage }));
+    };
 
     return (
         <DashboardLayout>
@@ -67,17 +101,41 @@ export default function StudentsPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         <input
                             type="text"
-                            placeholder="Search by name, roll number, or course..."
-                            className="input-field w-full pl-10"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search by name, roll number, or course… then press Enter"
+                            className="input-field w-full pl-10 pr-10"
+                            value={searchInput}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleSearchKeyDown}
                         />
+                        {searchInput && (
+                            <button
+                                onClick={clearSearch}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                title="Clear search"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        )}
                     </div>
                     <button className="btn-secondary flex items-center gap-2">
                         <Filter className="h-5 w-5" />
                         Filters
                     </button>
                 </div>
+
+                {/* Applied search badge */}
+                {appliedSearch && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>Showing results for:</span>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                            &ldquo;{appliedSearch}&rdquo;
+                            <button onClick={clearSearch} className="ml-1 hover:text-primary/60">
+                                <X className="h-3 w-3" />
+                            </button>
+                        </span>
+                        <span className="text-xs">({pagination.total} results)</span>
+                    </div>
+                )}
 
                 {/* Students Table */}
                 <div className="glass-card overflow-hidden">
@@ -86,11 +144,11 @@ export default function StudentsPage() {
                             <Loader2 className="h-10 w-10 animate-spin mb-4" />
                             <p>Loading students data...</p>
                         </div>
-                    ) : filteredStudents.length > 0 ? (
+                    ) : students.length > 0 ? (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead className="bg-muted/50 border-b border-border/50">
-                                    <tr className="text-muted-foreground text-sm">
+                                    <tr className="text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-wider">
                                         <th className="px-6 py-4 font-medium">Roll No</th>
                                         <th className="px-6 py-4 font-medium">Student Name</th>
                                         <th className="px-6 py-4 font-medium">Course</th>
@@ -101,14 +159,14 @@ export default function StudentsPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border/50">
-                                    {filteredStudents.map((student) => (
+                                    {students.map((student) => (
                                         <tr key={student._id} className="group hover:bg-muted/30 transition-colors">
-                                            <td className="px-6 py-4 text-sm font-mono text-primary font-medium">{student.rollNumber}</td>
+                                            <td className="px-6 py-4 text-sm font-mono text-blue-600 dark:text-blue-400 font-bold">{student.rollNumber}</td>
                                             <td className="px-6 py-4">
-                                                <div className="font-semibold">{student.name}</div>
-                                                <div className="text-xs text-muted-foreground">{student.phone}</div>
+                                                <div className="font-black text-slate-900 dark:text-slate-100">{student.name}</div>
+                                                <div className="text-xs text-slate-700 dark:text-slate-400 font-bold">{student.phone}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-sm">{student.course}</td>
+                                            <td className="px-6 py-4 text-sm font-black text-slate-900 dark:text-slate-200">{student.course}</td>
                                             <td className="px-6 py-4 text-sm font-medium">₹{student.totalFees.toLocaleString()}</td>
                                             <td className="px-6 py-4">
                                                 <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden mb-1">
@@ -151,22 +209,68 @@ export default function StudentsPage() {
                         <div className="py-20 flex flex-col items-center justify-center text-muted-foreground">
                             <Users className="h-16 w-16 mb-4 opacity-20" />
                             <p className="text-xl font-medium">No students found</p>
-                            <p className="text-sm">Try adjusting your search or add a new student.</p>
-                            <Link href="/students/add" className="btn-primary mt-6">Enroll New Student</Link>
+                            <p className="text-sm">
+                                {appliedSearch
+                                    ? `No results for "${appliedSearch}". Try a different search.`
+                                    : 'Try adjusting your search or add a new student.'}
+                            </p>
+                            {!appliedSearch && (
+                                <Link href="/students/add" className="btn-primary mt-6">Enroll New Student</Link>
+                            )}
                         </div>
                     )}
 
-                    {/* Pagination Placeholder */}
-                    {!loading && filteredStudents.length > 0 && (
-                        <div className="px-6 py-4 border-t border-border/50 flex items-center justify-between">
+                    {/* Pagination Controls */}
+                    {!loading && pagination.totalPages > 0 && (
+                        <div className="px-6 py-4 border-t border-border/50 flex items-center justify-between flex-wrap gap-3">
                             <p className="text-sm text-muted-foreground">
-                                Showing <span className="font-medium">{filteredStudents.length}</span> students
+                                Page <span className="font-semibold">{pagination.page}</span> of{' '}
+                                <span className="font-semibold">{pagination.totalPages}</span>
+                                <span className="ml-2 text-xs">({pagination.total} total students)</span>
                             </p>
                             <div className="flex items-center gap-2">
-                                <button className="p-2 rounded-lg border border-border hover:bg-muted disabled:opacity-50" disabled>
+                                <button
+                                    className="p-2 rounded-lg border border-border hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed"
+                                    onClick={() => goToPage(pagination.page - 1)}
+                                    disabled={pagination.page <= 1}
+                                    title="Previous page"
+                                >
                                     <ChevronLeft className="h-4 w-4" />
                                 </button>
-                                <button className="p-2 rounded-lg border border-border hover:bg-muted disabled:opacity-50" disabled>
+
+                                {/* Page number pills */}
+                                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                                    .filter((p) => p === 1 || p === pagination.totalPages || Math.abs(p - pagination.page) <= 1)
+                                    .reduce((acc, p, idx, arr) => {
+                                        if (idx > 0 && p - arr[idx - 1] > 1) acc.push('...');
+                                        acc.push(p);
+                                        return acc;
+                                    }, [])
+                                    .map((item, idx) =>
+                                        item === '...' ? (
+                                            <span key={`ellipsis-${idx}`} className="px-1 text-muted-foreground text-sm">…</span>
+                                        ) : (
+                                            <button
+                                                key={item}
+                                                onClick={() => goToPage(item)}
+                                                className={cn(
+                                                    "w-8 h-8 rounded-lg text-sm font-medium border transition-colors",
+                                                    item === pagination.page
+                                                        ? "bg-primary text-primary-foreground border-primary"
+                                                        : "border-border hover:bg-muted"
+                                                )}
+                                            >
+                                                {item}
+                                            </button>
+                                        )
+                                    )}
+
+                                <button
+                                    className="p-2 rounded-lg border border-border hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed"
+                                    onClick={() => goToPage(pagination.page + 1)}
+                                    disabled={pagination.page >= pagination.totalPages}
+                                    title="Next page"
+                                >
                                     <ChevronRight className="h-4 w-4" />
                                 </button>
                             </div>

@@ -36,4 +36,8 @@ const EnrollmentSchema = new mongoose.Schema({
     timestamps: true,
 });
 
+// Indexes for faster queries
+EnrollmentSchema.index({ status: 1 });
+EnrollmentSchema.index({ createdAt: -1 });
+
 export default mongoose.models.Enrollment || mongoose.model('Enrollment', EnrollmentSchema);

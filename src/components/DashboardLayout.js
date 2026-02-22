@@ -4,6 +4,11 @@ import React from 'react';
 import { Navbar } from './Navbar';
 
 export function DashboardLayout({ children }) {
+    const [year, setYear] = React.useState('');
+    React.useEffect(() => {
+        setYear(new Date().getFullYear().toString());
+    }, []);
+
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
@@ -22,7 +27,7 @@ export function DashboardLayout({ children }) {
                             <p className="text-xs text-muted-foreground mt-1">Empowering students for a brighter future.</p>
                         </div>
                         <div className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
-                            © {new Date().getFullYear()} SRAJ Management System • All Rights Reserved
+                            © {year} SRAJ Management System • All Rights Reserved
                         </div>
                     </div>
                 </footer>

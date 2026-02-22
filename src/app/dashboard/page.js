@@ -151,13 +151,13 @@ export default function Dashboard() {
                     stats.recentStudents.map((student) => (
                       <tr key={student._id} className="group hover:bg-primary/[0.02] transition-colors">
                         <td className="py-4">
-                          <div className="font-bold text-slate-900 dark:text-white">{student.name}</div>
-                          <div className="text-[10px] text-muted-foreground font-mono uppercase">{student.rollNumber}</div>
+                          <div className="font-black text-slate-900 dark:text-white">{student.name}</div>
+                          <div className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase">{student.rollNumber}</div>
                         </td>
                         <td className="py-4">
-                          <span className="px-2 py-0.5 bg-muted rounded text-[10px] font-bold text-muted-foreground uppercase">{student.course}</span>
+                          <span className="px-2 py-0.5 bg-muted rounded text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase">{student.course}</span>
                         </td>
-                        <td className="py-4 text-xs font-medium text-slate-500">
+                        <td className="py-4 text-xs font-bold text-slate-700 dark:text-slate-500">
                           {new Date(student.createdAt).toLocaleDateString('en-IN', {
                             day: '2-digit',
                             month: '2-digit',

@@ -47,6 +47,16 @@ export function Navbar() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMenuOpen]);
+
     const handleLogout = async () => {
         try {
             const res = await fetch('/api/auth/logout', { method: 'POST' });
@@ -105,6 +115,7 @@ export function Navbar() {
                             <button
                                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                                 className="sm:flex h-9 w-9 rounded-full bg-primary/10 items-center justify-center border border-primary/20 cursor-pointer hover:bg-primary/20 transition-all duration-200 group overflow-hidden"
+                                suppressHydrationWarning
                             >
                                 <span className="text-xs font-black text-primary group-hover:scale-110 transition-transform">AD</span>
                             </button>
@@ -131,6 +142,7 @@ export function Navbar() {
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-foreground transition-all shadow-sm border border-black/5 dark:border-white/5"
+                            suppressHydrationWarning
                         >
                             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './ThemeToggle';
@@ -21,6 +21,16 @@ export function LandingNavbar() {
         { label: 'About Us', href: '#about' },
         { label: 'Contact', href: '#contact' },
     ];
+
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMenuOpen]);
 
     return (
         <header className="fixed top-0 z-50 w-full glass border-b border-white/10 shadow-lg">

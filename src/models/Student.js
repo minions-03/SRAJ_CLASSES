@@ -50,6 +50,11 @@ const StudentSchema = new mongoose.Schema({
     timestamps: true,
 });
 
+// Indexes for faster queries
+StudentSchema.index({ email: 1 });
+StudentSchema.index({ status: 1 });
+StudentSchema.index({ createdAt: -1 });
+
 StudentSchema.pre('save', async function () {
     if (!this.rollNumber) {
         const year = new Date().getFullYear();

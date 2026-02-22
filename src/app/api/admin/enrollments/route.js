@@ -3,11 +3,24 @@ import dbConnect from '@/lib/mongodb';
 import Enrollment from '@/models/Enrollment';
 import Student from '@/models/Student';
 
-export async function GET() {
+export async function GET(request) {
     try {
         await dbConnect();
-        const enrollments = await Enrollment.find({}).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, data: enrollments });
+        const { searchParams } = new URL(request.url);
+        const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+        const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '10')));
+        const skip = (page - 1) * limit;
+
+        const [total, enrollments] = await Promise.all([
+            Enrollment.countDocuments(),
+            Enrollment.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit),
+        ]);
+
+        return NextResponse.json({
+            success: true,
+            data: enrollments,
+            pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+        });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }

@@ -12,14 +12,16 @@ import {
     GraduationCap,
     Phone,
     Mail,
-    CheckCircle2
+    CheckCircle2,
+    X
 } from 'lucide-react';
 
 export default function EnrollmentsPage() {
     const [enrollments, setEnrollments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [processingId, setProcessingId] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [appliedSearch, setAppliedSearch] = useState('');
 
     useEffect(() => {
         fetchEnrollments();
@@ -63,9 +65,21 @@ export default function EnrollmentsPage() {
     };
 
     const filteredEnrollments = enrollments.filter(enrollment =>
-        enrollment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        enrollment.phone.includes(searchQuery)
+        enrollment.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
+        enrollment.phone.includes(appliedSearch)
     );
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') setAppliedSearch(searchInput.trim());
+    };
+
+    const handleSearchChange = (e) => {
+        const val = e.target.value;
+        setSearchInput(val);
+        if (val === '') setAppliedSearch('');
+    };
+
+    const clearSearch = () => { setSearchInput(''); setAppliedSearch(''); };
 
     const pendingCount = enrollments.filter(e => e.status === 'Pending').length;
 
@@ -94,12 +108,29 @@ export default function EnrollmentsPage() {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <input
                         type="text"
-                        placeholder="Search by name or phone..."
-                        className="input-field pl-12 py-4"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search by name or phone… then press Enter"
+                        className="input-field pl-12 pr-10 py-4"
+                        value={searchInput}
+                        onChange={handleSearchChange}
+                        onKeyDown={handleKeyDown}
                     />
+                    {searchInput && (
+                        <button onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                            <X className="h-4 w-4" />
+                        </button>
+                    )}
                 </div>
+
+                {appliedSearch && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground -mt-4">
+                        <span>Results for:</span>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                            &ldquo;{appliedSearch}&rdquo;
+                            <button onClick={clearSearch} className="ml-1 hover:text-primary/60"><X className="h-3 w-3" /></button>
+                        </span>
+                        <span className="text-xs">({filteredEnrollments.length} results)</span>
+                    </div>
+                )}
 
                 {loading && enrollments.length === 0 ? (
                     <div className="flex h-[40vh] items-center justify-center">
