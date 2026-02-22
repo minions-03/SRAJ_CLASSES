@@ -7,7 +7,6 @@ import {
     UserX,
     Clock,
     Loader2,
-    Search,
     RefreshCcw,
     GraduationCap,
     Phone,
@@ -15,6 +14,7 @@ import {
     CheckCircle2,
     X
 } from 'lucide-react';
+import { SearchInput } from '@/components/SearchInput';
 
 export default function EnrollmentsPage() {
     const [enrollments, setEnrollments] = useState([]);
@@ -103,32 +103,33 @@ export default function EnrollmentsPage() {
                     </button>
                 </div>
 
-                {/* Search and Filters */}
-                <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <input
-                        type="text"
-                        placeholder="Search by name or phone… then press Enter"
-                        className="input-field pl-12 pr-10 py-4"
-                        value={searchInput}
-                        onChange={handleSearchChange}
-                        onKeyDown={handleKeyDown}
-                    />
-                    {searchInput && (
-                        <button onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                            <X className="h-4 w-4" />
-                        </button>
-                    )}
+                {/* Stats & Search */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="md:col-span-3">
+                        <SearchInput
+                            value={searchInput}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleKeyDown}
+                            onClear={clearSearch}
+                            placeholder="Search pending applications by name or phone… then press Enter"
+                        />
+                    </div>
+                    <div className="flex items-center justify-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-xl text-xs font-bold text-primary uppercase tracking-widest">
+                        <Clock className="h-3.5 w-3.5" />
+                        {pendingCount} Pending
+                    </div>
                 </div>
 
                 {appliedSearch && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground -mt-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground -mt-2">
                         <span>Results for:</span>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold">
                             &ldquo;{appliedSearch}&rdquo;
-                            <button onClick={clearSearch} className="ml-1 hover:text-primary/60"><X className="h-3 w-3" /></button>
+                            <button onClick={clearSearch} className="ml-1 hover:text-primary/60 transition-colors">
+                                <X className="h-3 w-3" />
+                            </button>
                         </span>
-                        <span className="text-xs">({filteredEnrollments.length} results)</span>
+                        <span className="text-xs">({filteredEnrollments.length} found)</span>
                     </div>
                 )}
 
@@ -197,12 +198,6 @@ export default function EnrollmentsPage() {
                                                     Reject
                                                 </button>
                                             </>
-                                        )}
-                                        {enrollment.status === 'Approved' && (
-                                            <div className="flex items-center gap-2 text-green-500 font-black text-xs uppercase tracking-widest">
-                                                <CheckCircle2 className="h-5 w-5" />
-                                                Admitted
-                                            </div>
                                         )}
                                     </div>
                                 </div>

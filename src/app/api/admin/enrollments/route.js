@@ -11,9 +11,11 @@ export async function GET(request) {
         const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '10')));
         const skip = (page - 1) * limit;
 
+        const query = { status: { $ne: 'Approved' } };
+
         const [total, enrollments] = await Promise.all([
-            Enrollment.countDocuments(),
-            Enrollment.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            Enrollment.countDocuments(query),
+            Enrollment.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
         ]);
 
         return NextResponse.json({
