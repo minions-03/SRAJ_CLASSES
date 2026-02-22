@@ -22,13 +22,20 @@ async function dbConnect() {
     return cached.conn;
   }
 
+  // If a connection is already in progress, wait for it
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
+    // Also check mongoose.connection.readyState as an extra layer of safety
+    if (mongoose.connection.readyState >= 1) {
+      cached.conn = mongoose.connection;
+      return cached.conn;
+    }
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+      return mongooseInstance;
     });
   }
 

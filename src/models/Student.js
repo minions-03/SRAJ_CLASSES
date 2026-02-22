@@ -76,11 +76,6 @@ StudentSchema.pre('save', async function () {
     }
 });
 
-// Clear model cache in development to ensure schema changes are applied
-if (mongoose.models.Student) {
-    delete mongoose.models.Student;
-}
-
-const Student = mongoose.model('Student', StudentSchema);
+const Student = mongoose.models.Student || mongoose.model('Student', StudentSchema);
 
 export default Student;
