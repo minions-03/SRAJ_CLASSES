@@ -12,6 +12,7 @@ import {
     ChevronRight,
     Loader2,
     Save,
+    X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -91,25 +92,51 @@ export default function StudentsPage() {
     // ── Edit handlers ──
     const openEdit = (student) => {
         setSelectedStudent(student);
+
+        // Normalize phone for the form: extract last 10 digits and prefix with +91 
+        let rawPhone = student.phone || '';
+        let digitsOnly = rawPhone.replace(/\D/g, '');
+        let last10Digits = digitsOnly.slice(-10);
+        let normalizedPhone = last10Digits.length === 10 ? `+91 ${last10Digits}` : rawPhone;
+
         setEditForm({
+            studentId: student.studentId || '',
             name: student.name || '',
-            phone: student.phone || '',
+            phone: normalizedPhone,
             email: student.email || '',
             course: student.course || '',
             totalFees: student.totalFees || 0,
+            paidFees: student.paidFees || 0,
+            address: student.address || '',
             status: student.status || 'Active',
+            enrollmentDate: student.enrollmentDate || student.createdAt || '',
         });
         setIsEditing(true);
     };
 
     const handleEditSave = async () => {
         if (!selectedStudent) return;
+
+        // Basic frontend validation
+        if (!editForm.name.trim()) return toast.warn("Student name is required");
+        if (!editForm.phone.trim()) return toast.warn("Phone number is required");
+        if (!editForm.address?.trim()) return toast.warn("Full address is required");
+
+        // Force strict format: "+91 0000000000"
+        const digits = editForm.phone.replace(/\D/g, '').slice(-10);
+        if (digits.length !== 10) return toast.warn("Please enter a valid 10-digit phone number");
+
+        const validatedPhone = `+91 ${digits}`;
+
         setEditLoading(true);
         try {
             const res = await fetch(`/api/students/${selectedStudent._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(editForm),
+                body: JSON.stringify({
+                    ...editForm,
+                    phone: validatedPhone
+                }),
             });
             const json = await res.json();
             if (json.success) {
@@ -118,6 +145,7 @@ export default function StudentsPage() {
                 fetchStudents(pagination.page, appliedSearch);
             } else {
                 toast.error(json.error || 'Failed to update student.');
+                console.error("Save error:", json.error);
             }
         } catch (err) {
             toast.error('Something went wrong. Please try again.');
@@ -365,6 +393,20 @@ export default function StudentsPage() {
                 }
             >
                 <div className="space-y-5">
+                    {/* Read-only IDs and Dates */}
+                    <div className="grid grid-cols-2 gap-4 p-3 bg-muted/30 rounded-xl border border-border/50">
+                        <div className="space-y-1">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-500">Student ID</label>
+                            <div className="text-sm font-mono font-bold text-blue-600 dark:text-blue-400">{editForm.studentId}</div>
+                        </div>
+                        <div className="space-y-1 text-right">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-500">Enrollment Date</label>
+                            <div className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                                {editForm.enrollmentDate ? new Date(editForm.enrollmentDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Student Name</label>
                         <input
@@ -374,15 +416,21 @@ export default function StudentsPage() {
                             onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                         />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Mobile No.</label>
-                            <input
-                                type="text"
-                                className="input-field !pl-4"
-                                value={editForm.phone}
-                                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                            />
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Mobile No. (+91)</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">+91 </span>
+                                <input
+                                    type="text"
+                                    className="input-field !pl-14"
+                                    value={editForm.phone ? editForm.phone.replace('+91 ', '') : ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                        setEditForm({ ...editForm, phone: val ? `+91 ${val}` : '' });
+                                    }}
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Email ID</label>
@@ -393,6 +441,14 @@ export default function StudentsPage() {
                                 onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                             />
                         </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Full Address</label>
+                        <textarea
+                            className="input-field !pl-4 min-h-[80px] py-3"
+                            value={editForm.address}
+                            onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                        />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -405,7 +461,22 @@ export default function StudentsPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Total Agreed Fees (₹)</label>
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Account Status</label>
+                            <select
+                                className="input-field !pl-4"
+                                value={editForm.status}
+                                onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                            >
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Total Fees (₹)</label>
                             <input
                                 type="number"
                                 className="input-field !pl-4"
@@ -413,17 +484,13 @@ export default function StudentsPage() {
                                 onChange={(e) => setEditForm({ ...editForm, totalFees: parseFloat(e.target.value) || 0 })}
                             />
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Account Status</label>
-                        <select
-                            className="input-field !pl-4"
-                            value={editForm.status}
-                            onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                        >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">Paid Fees (₹)</label>
+                            <div className="input-field bg-muted/50 !pl-4 flex items-center font-bold text-green-600">
+                                ₹{editForm.paidFees?.toLocaleString()}
+                            </div>
+                            <p className="text-[9px] text-muted-foreground italic">Update via billing page</p>
+                        </div>
                     </div>
                 </div>
             </Modal>

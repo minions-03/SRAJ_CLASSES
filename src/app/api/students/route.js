@@ -26,7 +26,7 @@ export async function GET(request) {
         const [total, students] = await Promise.all([
             Student.countDocuments(query),
             Student.find(query)
-                .select('name studentId course phone totalFees paidFees status createdAt')
+                .select('name studentId course phone email address totalFees paidFees status createdAt')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit),

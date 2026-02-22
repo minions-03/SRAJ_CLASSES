@@ -19,13 +19,23 @@ export async function PUT(request, { params }) {
     try {
         const { id } = await params;
         const body = await request.json();
+
+        // Log the ID and body to help debug 400 errors
+        console.log(`[API] Updating student ${id}:`, body);
+
         const student = await Student.findByIdAndUpdate(id, body, {
             returnDocument: 'after',
             runValidators: true,
         });
-        if (!student) return NextResponse.json({ success: false, error: 'Student not found' }, { status: 404 });
+
+        if (!student) {
+            console.error(`[API] Student ${id} not found for update`);
+            return NextResponse.json({ success: false, error: 'Student not found' }, { status: 404 });
+        }
+
         return NextResponse.json({ success: true, data: student });
     } catch (error) {
+        console.error(`[API] Update error for student ${params.id}:`, error);
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
 }
@@ -38,6 +48,7 @@ export async function DELETE(request, { params }) {
         if (!deletedStudent.deletedCount) return NextResponse.json({ success: false, error: 'Student not found' }, { status: 404 });
         return NextResponse.json({ success: true, data: {} });
     } catch (error) {
+        console.error(`[API] Delete error for student ${params.id}:`, error);
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
 }
