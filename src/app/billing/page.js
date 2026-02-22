@@ -3,17 +3,15 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import {
-    Search,
     CreditCard,
     Save,
     Loader2,
     Plus,
     Trash2,
-    BookOpen,
-    Library,
-    GraduationCap,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { SearchInput } from '@/components/SearchInput';
 
 let nextId = 1;
 const makeRow = () => ({ id: nextId++, type: '', amount: '' });
@@ -57,7 +55,18 @@ export default function BillingPage() {
         const val = e.target.value;
         setSearchTerm(val);
         clearTimeout(debounceTimer.current);
-        debounceTimer.current = setTimeout(() => searchStudents(val), 350);
+        if (val === '') {
+            setStudents([]);
+            setSearching(false);
+        } else {
+            debounceTimer.current = setTimeout(() => searchStudents(val), 350);
+        }
+    };
+
+    const clearSearch = () => {
+        setSearchTerm('');
+        setStudents([]);
+        setSearching(false);
     };
 
     // ── Fee rows helpers ────────────────────────────────────────
@@ -93,9 +102,15 @@ export default function BillingPage() {
                 }),
             });
             const json = await res.json();
-            if (json.success) router.push(`/billing/${json.data._id}`);
+            if (json.success) {
+                toast.success('Payment recorded successfully!');
+                router.push(`/billing/${json.data._id}`);
+            } else {
+                toast.error(json.error || 'Payment failed. Please try again.');
+            }
         } catch (err) {
             console.error('Payment failed:', err);
+            toast.error('Payment failed. Please try again.');
         } finally {
             setSubmitting(false);
         }
@@ -119,29 +134,28 @@ export default function BillingPage() {
 
                         {/* ── Step 1: Select Student ── */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                                     1. Select Student *
                                 </label>
                                 <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                    <input
-                                        type="text"
-                                        placeholder="Type 2+ characters to search…"
-                                        className="input-field w-full pl-10 h-12 text-lg"
+                                    <SearchInput
                                         value={searchTerm}
                                         onChange={handleSearchChange}
+                                        onClear={clearSearch}
+                                        placeholder="Type 2+ characters to search…"
+                                        className="h-14 text-lg !pl-12"
                                     />
                                     {searching && (
-                                        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                                        <Loader2 className="absolute right-12 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-primary" />
                                     )}
                                 </div>
 
                                 {searchTerm.length >= 2 && (
-                                    <div className="mt-2 max-h-60 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 shadow-2xl z-20 relative">
+                                    <div className="mt-2 max-h-60 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-2xl z-20 relative animate-in fade-in zoom-in-95 duration-200">
                                         {searching ? (
-                                            <div className="px-5 py-4 text-sm text-slate-500 italic text-center flex items-center justify-center gap-2">
-                                                <Loader2 className="h-4 w-4 animate-spin" /> Searching…
+                                            <div className="px-5 py-6 text-sm text-slate-500 italic text-center flex items-center justify-center gap-3">
+                                                <Loader2 className="h-5 w-5 animate-spin text-primary" /> Searching records…
                                             </div>
                                         ) : students.length > 0 ? (
                                             students.map(s => (
@@ -149,14 +163,14 @@ export default function BillingPage() {
                                                     key={s._id}
                                                     type="button"
                                                     onClick={() => { setSelectedStudent(s); setSearchTerm(''); setStudents([]); }}
-                                                    className="w-full text-left px-5 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-0"
+                                                    className="w-full text-left px-5 py-4 hover:bg-primary/5 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-0 group"
                                                 >
-                                                    <div className="font-bold text-slate-900 dark:text-slate-50 text-base">{s.name}</div>
-                                                    <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">{s.rollNumber} • {s.course}</div>
+                                                    <div className="font-black text-slate-900 dark:text-white text-base group-hover:text-primary transition-colors">{s.name}</div>
+                                                    <div className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-0.5">{s.studentId} • {s.course}</div>
                                                 </button>
                                             ))
                                         ) : (
-                                            <div className="px-5 py-4 text-sm text-slate-500 italic text-center">No results found</div>
+                                            <div className="px-5 py-8 text-sm text-slate-500 font-medium text-center">No students found matching &quot;{searchTerm}&quot;</div>
                                         )}
                                     </div>
                                 )}
@@ -164,22 +178,28 @@ export default function BillingPage() {
 
                             <div className="min-h-[100px] flex items-center">
                                 {selectedStudent ? (
-                                    <div className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
-                                        <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1">Selected Student</p>
+                                    <div className="w-full p-6 bg-primary/5 border-2 border-primary/20 rounded-2xl animate-in fade-in slide-in-from-right-4 duration-300">
+                                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2">Selected Student Profile</p>
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight">{selectedStudent.name}</h3>
-                                                <p className="text-sm text-slate-700 dark:text-slate-400 mt-1 font-medium">{selectedStudent.rollNumber} • {selectedStudent.course}</p>
+                                                <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight">{selectedStudent.name}</h3>
+                                                <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 font-bold uppercase tracking-wider">{selectedStudent.studentId} • {selectedStudent.course}</p>
                                             </div>
-                                            <button type="button" onClick={() => setSelectedStudent(null)}
-                                                className="px-2 py-1 text-[10px] font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                            <button
+                                                type="button"
+                                                onClick={() => setSelectedStudent(null)}
+                                                className="px-3 py-1.5 text-[10px] font-black text-primary hover:bg-primary hover:text-white border border-primary/20 rounded-lg transition-all"
+                                            >
                                                 CHANGE
                                             </button>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="w-full border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-center p-6 text-slate-400 italic text-sm text-center">
-                                        Search and select a student to enable payment options.
+                                    <div className="w-full border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center p-8 text-slate-400 italic text-sm text-center">
+                                        <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
+                                            <CreditCard className="h-6 w-6 opacity-40" />
+                                        </div>
+                                        Search and select a student to begin collection.
                                     </div>
                                 )}
                             </div>
@@ -187,10 +207,10 @@ export default function BillingPage() {
 
                         {/* ── Step 2: Fee Items ── */}
                         {selectedStudent && (
-                            <div className="space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-4 duration-500">
+                            <div className="space-y-6 pt-8 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-6 duration-500">
 
-                                <div className="space-y-3">
-                                    <label className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                                         2. Fee Items *
                                     </label>
 
@@ -198,10 +218,10 @@ export default function BillingPage() {
                                         {feeRows.map((row, idx) => (
                                             <div
                                                 key={row.id}
-                                                className="flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 border-border bg-white dark:bg-slate-900"
+                                                className="flex items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-200 border-border bg-white dark:bg-slate-900 focus-within:border-primary/40 shadow-sm"
                                             >
                                                 {/* Row number */}
-                                                <span className="text-xs font-black text-muted-foreground w-5 text-center shrink-0">
+                                                <span className="text-[10px] font-black text-muted-foreground w-6 h-6 rounded-full bg-muted flex items-center justify-center shrink-0">
                                                     {idx + 1}
                                                 </span>
 
@@ -210,7 +230,7 @@ export default function BillingPage() {
                                                     <input
                                                         type="text"
                                                         placeholder="Fee description (e.g. Tuition Fees)"
-                                                        className="input-field w-full h-11 text-sm font-semibold pr-4"
+                                                        className="input-field w-full h-12 text-sm font-bold !pl-4 pr-4"
                                                         value={row.type}
                                                         onChange={(e) => updateRow(row.id, 'type', e.target.value)}
                                                     />
@@ -218,12 +238,12 @@ export default function BillingPage() {
 
                                                 {/* Amount */}
                                                 <div className="relative w-44 shrink-0">
-                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-primary">₹</span>
+                                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-primary">₹</span>
                                                     <input
                                                         type="number"
                                                         min="0"
                                                         placeholder="0.00"
-                                                        className="input-field w-full pl-8 h-11 text-base font-bold"
+                                                        className="input-field w-full !pl-10 h-12 text-lg font-black"
                                                         value={row.amount}
                                                         onChange={(e) => updateRow(row.id, 'amount', e.target.value)}
                                                     />
@@ -234,10 +254,10 @@ export default function BillingPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => removeFeeRow(row.id)}
-                                                        className="p-2 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors shrink-0"
-                                                        title="Remove"
+                                                        className="p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all shrink-0 active:scale-95"
+                                                        title="Remove Fee Item"
                                                     >
-                                                        <Trash2 className="h-4 w-4" />
+                                                        <Trash2 className="h-5 w-5" />
                                                     </button>
                                                 )}
                                             </div>
@@ -249,35 +269,35 @@ export default function BillingPage() {
                                         <button
                                             type="button"
                                             onClick={addFeeRow}
-                                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-primary/40 text-primary font-semibold text-sm hover:border-primary hover:bg-primary/5 transition-all duration-200"
+                                            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-primary/30 text-primary font-black text-xs uppercase tracking-widest hover:border-primary hover:bg-primary/5 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-sm"
                                         >
                                             <Plus className="h-4 w-4" />
-                                            Add Another Row
+                                            Add Another Item
                                         </button>
                                     </div>
 
                                     {/* Total */}
                                     {total > 0 && (
-                                        <div className="flex items-center justify-between px-5 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl">
+                                        <div className="flex items-center justify-between px-6 py-6 bg-slate-900 dark:bg-primary/10 border border-slate-800 dark:border-primary/20 rounded-2xl shadow-xl animate-in zoom-in-95 duration-300">
                                             <div>
-                                                <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.15em]">Total Payable</p>
-                                                <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-medium">
+                                                <p className="text-[10px] font-black text-slate-400 dark:text-primary uppercase tracking-[0.2em]">Total Amount Collected</p>
+                                                <p className="text-[11px] text-slate-300 dark:text-slate-300 mt-1 font-bold uppercase tracking-tight">
                                                     {feeRows.filter(r => parseFloat(r.amount) > 0).map(r => r.type || 'Unnamed Fee').join(' + ')}
                                                 </p>
                                             </div>
-                                            <span className="text-3xl font-black text-slate-900 dark:text-white">₹{total.toLocaleString()}</span>
+                                            <span className="text-4xl font-black text-white">₹{total.toLocaleString()}</span>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* ── Step 3: Payment Details ── */}
-                                <div className="space-y-3">
-                                    <label className="text-sm font-bold uppercase tracking-wider text-slate-500">3. Payment Details</label>
+                                <div className="space-y-4 pt-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">3. Final Transaction Details</label>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium">Payment Month *</label>
+                                            <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 ml-1">Payment Month *</label>
                                             <select
-                                                className="input-field w-full bg-background h-14 cursor-pointer text-lg font-medium"
+                                                className="input-field w-full bg-background h-14 cursor-pointer text-lg font-black !pl-4"
                                                 value={paymentMonth}
                                                 onChange={(e) => setPaymentMonth(e.target.value)}
                                             >
@@ -288,24 +308,24 @@ export default function BillingPage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium">Payment Method</label>
+                                            <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 ml-1">Payment Method</label>
                                             <select
-                                                className="input-field w-full bg-background h-14 cursor-pointer text-lg font-medium"
+                                                className="input-field w-full bg-background h-14 cursor-pointer text-lg font-black !pl-4"
                                                 value={paymentMethod}
                                                 onChange={(e) => setPaymentMethod(e.target.value)}
                                             >
-                                                <option value="Cash">💵 Cash</option>
-                                                <option value="UPI">📱 UPI (Paytm / GPay)</option>
-                                                <option value="Bank Transfer">🏦 Bank Transfer</option>
-                                                <option value="Cheque">📄 Cheque</option>
+                                                <option value="Cash">💵 Cash Payment</option>
+                                                <option value="UPI">📱 UPI / Online Transfer</option>
+                                                <option value="Bank Transfer">🏦 Direct Bank Deposit</option>
+                                                <option value="Cheque">📄 Cheque Payment</option>
                                             </select>
                                         </div>
 
                                         <div className="md:col-span-2 space-y-2">
-                                            <label className="text-sm font-medium">Remarks / Description (optional)</label>
+                                            <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 ml-1">Remarks / Note (optional)</label>
                                             <textarea
-                                                className="input-field w-full min-h-[80px] py-3 text-base"
-                                                placeholder="e.g. Monthly installment, First-term admission…"
+                                                className="input-field w-full min-h-[100px] py-4 text-base font-medium !pl-4"
+                                                placeholder="Enter any additional payment details or notes here…"
                                                 value={remarks}
                                                 onChange={(e) => setRemarks(e.target.value)}
                                             />
@@ -317,11 +337,12 @@ export default function BillingPage() {
                                 <button
                                     type="submit"
                                     disabled={submitting || total <= 0}
-                                    className="btn-primary w-full h-16 text-xl font-bold flex items-center justify-center gap-3 shadow-xl shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:-translate-y-1"
+                                    className="btn-primary w-full h-18 text-xl font-black uppercase tracking-widest flex items-center justify-center gap-4 rounded-2xl shadow-2xl shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.02] active:scale-[0.98] mt-8 overflow-hidden group relative"
                                 >
+                                    <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 slant-gradient" />
                                     {submitting
-                                        ? <><Loader2 className="h-6 w-6 animate-spin" /> Processing…</>
-                                        : <><Save className="h-6 w-6" /> Finalize Payment — ₹{total.toLocaleString()}</>
+                                        ? <><Loader2 className="h-7 w-7 animate-spin" /> Processing…</>
+                                        : <><Save className="h-7 w-7" /> Generate Receipt — ₹{total.toLocaleString()}</>
                                     }
                                 </button>
                             </div>

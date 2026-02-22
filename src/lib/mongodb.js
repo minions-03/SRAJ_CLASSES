@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI ? process.env.MONGODB_URI.trim() : undefined;
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
@@ -24,18 +24,8 @@ async function dbConnect() {
 
   // If a connection is already in progress, wait for it
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    // Also check mongoose.connection.readyState as an extra layer of safety
-    if (mongoose.connection.readyState >= 1) {
-      cached.conn = mongoose.connection;
-      return cached.conn;
-    }
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
-      return mongooseInstance;
+    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
+      return mongoose;
     });
   }
 

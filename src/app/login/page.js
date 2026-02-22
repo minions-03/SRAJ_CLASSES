@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { GraduationCap, Lock, User, Loader2, ArrowRight, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { toast } from 'react-toastify';
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -26,12 +27,17 @@ export default function LoginPage() {
 
             const data = await res.json();
             if (data.success) {
+                toast.success('Login successful! Redirecting…');
                 router.push('/dashboard');
             } else {
-                setError(data.message || 'Invalid credentials');
+                const msg = data.message || 'Invalid credentials';
+                setError(msg);
+                toast.error(msg);
             }
         } catch (err) {
-            setError('Something went wrong. Please try again.');
+            const msg = 'Something went wrong. Please try again.';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }

@@ -5,8 +5,8 @@ import Counter from '@/models/Counter';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-    await dbConnect();
     try {
+        await dbConnect();
         const invoices = await Invoice.find({}).populate('studentId').sort({ createdAt: -1 });
         return NextResponse.json({ success: true, data: invoices });
     } catch (error) {
@@ -15,8 +15,8 @@ export async function GET() {
 }
 
 export async function POST(request) {
-    await dbConnect();
     try {
+        await dbConnect();
         const body = await request.json();
         console.log('--- BILLING POST BODY ---', JSON.stringify(body, null, 2));
 
@@ -25,7 +25,7 @@ export async function POST(request) {
             const counter = await Counter.findOneAndUpdate(
                 { id: 'invoice_number' },
                 { $inc: { seq: 1 } },
-                { new: true, upsert: true }
+                { returnDocument: 'after', upsert: true }
             );
             body.invoiceNumber = `M-${counter.seq.toString().padStart(3, '0')}`;
         }

@@ -152,7 +152,7 @@ export default function Dashboard() {
                       <tr key={student._id} className="group hover:bg-primary/[0.02] transition-colors">
                         <td className="py-4">
                           <div className="font-black text-slate-900 dark:text-white">{student.name}</div>
-                          <div className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase">{student.rollNumber}</div>
+                          <div className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase">{student.studentId}</div>
                         </td>
                         <td className="py-4">
                           <span className="px-2 py-0.5 bg-muted rounded text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase">{student.course}</span>

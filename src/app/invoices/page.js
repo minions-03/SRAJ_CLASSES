@@ -6,13 +6,12 @@ import {
     History,
     Printer,
     Loader2,
-    Search,
     FileText,
     Calendar,
-    Download,
     X
 } from 'lucide-react';
 import Link from 'next/link';
+import { SearchInput } from '@/components/SearchInput';
 
 export default function InvoicesPage() {
     const [invoices, setInvoices] = useState([]);
@@ -42,7 +41,7 @@ export default function InvoicesPage() {
     const filteredInvoices = invoices.filter(inv =>
         inv.invoiceNumber?.toLowerCase().includes(appliedSearch.toLowerCase()) ||
         inv.studentId?.name?.toLowerCase().includes(appliedSearch.toLowerCase()) ||
-        inv.studentId?.rollNumber?.toLowerCase().includes(appliedSearch.toLowerCase())
+        inv.studentId?.studentId?.toLowerCase().includes(appliedSearch.toLowerCase())
     );
 
     const handleKeyDown = (e) => {
@@ -68,22 +67,13 @@ export default function InvoicesPage() {
                 </div>
 
                 <div className="glass-card flex flex-col md:flex-row md:items-center gap-4 p-4 mb-6">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <input
-                            type="text"
-                            placeholder="Search by invoice number, student name, or roll number… then press Enter"
-                            className="input-field w-full pl-10 pr-10"
-                            value={searchInput}
-                            onChange={handleSearchChange}
-                            onKeyDown={handleKeyDown}
-                        />
-                        {searchInput && (
-                            <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                                <X className="h-4 w-4" />
-                            </button>
-                        )}
-                    </div>
+                    <SearchInput
+                        value={searchInput}
+                        onChange={handleSearchChange}
+                        onKeyDown={handleKeyDown}
+                        onClear={clearSearch}
+                        placeholder="Search by invoice number, student name, or student ID… then press Enter"
+                    />
                     <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-xs font-bold text-muted-foreground uppercase tracking-widest">
                         <Calendar className="h-3 w-3" />
                         Total Records: {filteredInvoices.length}
@@ -93,9 +83,11 @@ export default function InvoicesPage() {
                 {appliedSearch && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                         <span>Results for:</span>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold">
                             &ldquo;{appliedSearch}&rdquo;
-                            <button onClick={clearSearch} className="ml-1 hover:text-primary/60"><X className="h-3 w-3" /></button>
+                            <button onClick={clearSearch} className="ml-1 hover:text-primary/60 transition-colors">
+                                <X className="h-3 w-3" />
+                            </button>
                         </span>
                     </div>
                 )}
@@ -118,7 +110,7 @@ export default function InvoicesPage() {
                             <tbody className="divide-y divide-border/50">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="6" className="px-6 py-20 text-center">
+                                        <td colSpan="8" className="px-6 py-20 text-center">
                                             <div className="flex flex-col items-center gap-3">
                                                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
                                                 <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Fetching history...</p>
@@ -143,7 +135,7 @@ export default function InvoicesPage() {
                                             </td>
                                             <td className="px-6 py-5">
                                                 <div className="text-sm font-black text-slate-900 dark:text-slate-200">{inv.studentId?.name || 'Unknown'}</div>
-                                                <div className="text-xs text-slate-700 dark:text-slate-400 mt-0.5 font-medium">{inv.studentId?.rollNumber} • {inv.studentId?.course}</div>
+                                                <div className="text-xs text-slate-700 dark:text-slate-400 mt-0.5 font-medium">{inv.studentId?.studentId} • {inv.studentId?.course}</div>
                                             </td>
                                             <td className="px-6 py-5">
                                                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
@@ -187,7 +179,7 @@ export default function InvoicesPage() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="6" className="px-6 py-32 text-center text-muted-foreground italic">
+                                        <td colSpan="8" className="px-6 py-32 text-center text-muted-foreground italic">
                                             <div className="flex flex-col items-center gap-4 opacity-30">
                                                 <History className="h-16 w-16" />
                                                 <p className="text-lg">No records match your criteria.</p>

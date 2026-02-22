@@ -31,7 +31,7 @@ export async function GET() {
                 },
             ]),
             Student.find()
-                .select('name rollNumber course createdAt')
+                .select('name studentId course createdAt')
                 .sort({ createdAt: -1 })
                 .limit(5),
             Enrollment.countDocuments({ status: 'Pending' }),

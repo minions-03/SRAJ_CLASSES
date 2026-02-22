@@ -33,7 +33,6 @@ const InvoiceSchema = new mongoose.Schema({
     },
     feeType: {
         type: String,
-        enum: ['Tuition Fees', 'Library Fees', 'Admission Fees', 'Combined'],
         default: 'Tuition Fees',
     },
     // Used when feeType === 'Combined' — stores individual line items

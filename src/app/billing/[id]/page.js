@@ -106,7 +106,7 @@ export default function InvoiceDetailPage() {
                         <h3 className="text-sm font-bold border-b border-slate-900 pb-0.5 inline-block">Student details</h3>
                         <div className="space-y-1.5 text-sm font-semibold text-slate-700">
                             <p className="flex gap-2"><span>Name:</span> <span className="text-slate-900">{student?.name}</span></p>
-                            <p className="flex gap-2"><span>Roll No.:</span> <span className="text-slate-900">{student?.rollNumber}</span></p>
+                            <p className="flex gap-2"><span>Student ID:</span> <span className="text-slate-900">{student?.studentId}</span></p>
                             <p className="flex gap-2"><span>Course:</span> <span className="text-slate-900">{student?.course}</span></p>
                             <p className="flex gap-2"><span>Phone No.:</span> <span className="text-slate-900">{student?.phone}</span></p>
                             <p className="flex gap-2"><span>Email:</span> <span className="text-slate-900 lowercase font-normal">{student?.email || 'N/A'}</span></p>

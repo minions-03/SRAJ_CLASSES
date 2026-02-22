@@ -7,7 +7,7 @@ const StudentSchema = new mongoose.Schema({
         required: [true, 'Please provide a name for this student.'],
         maxlength: [60, 'Name cannot be more than 60 characters'],
     },
-    rollNumber: {
+    studentId: {
         type: String,
         unique: true,
     },
@@ -56,7 +56,7 @@ StudentSchema.index({ status: 1 });
 StudentSchema.index({ createdAt: -1 });
 
 StudentSchema.pre('save', async function () {
-    if (!this.rollNumber) {
+    if (!this.studentId) {
         const year = new Date().getFullYear();
         const counterId = `rollnumber_${year}`;
 
@@ -64,11 +64,11 @@ StudentSchema.pre('save', async function () {
             const counter = await Counter.findOneAndUpdate(
                 { id: counterId },
                 { $inc: { seq: 1 } },
-                { new: true, upsert: true }
+                { returnDocument: 'after', upsert: true }
             );
 
             const sequenceNumber = counter.seq.toString().padStart(3, '0');
-            this.rollNumber = `SRAJ/${year}/${sequenceNumber}`;
+            this.studentId = `SRAJ/${year}/${sequenceNumber}`;
         } catch (error) {
             console.error('Error in pre-save hook:', error);
             throw error;

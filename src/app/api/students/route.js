@@ -11,12 +11,12 @@ export async function GET(request) {
         const search = searchParams.get('search')?.trim() || '';
         const skip = (page - 1) * limit;
 
-        // Build query — regex search across name, rollNumber, course
+        // Build query — regex search across name, studentId, course
         const query = search
             ? {
                 $or: [
                     { name: { $regex: search, $options: 'i' } },
-                    { rollNumber: { $regex: search, $options: 'i' } },
+                    { studentId: { $regex: search, $options: 'i' } },
                     { course: { $regex: search, $options: 'i' } },
                 ],
             }
@@ -26,7 +26,7 @@ export async function GET(request) {
         const [total, students] = await Promise.all([
             Student.countDocuments(query),
             Student.find(query)
-                .select('name rollNumber course phone totalFees paidFees status createdAt')
+                .select('name studentId course phone totalFees paidFees status createdAt')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit),
