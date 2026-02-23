@@ -48,7 +48,7 @@ export async function PATCH(request) {
 
         // If approved, create a student record
         if (status === 'Approved') {
-            await Student.create({
+            const newStudent = await Student.create({
                 name: enrollment.name,
                 email: enrollment.email,
                 phone: enrollment.phone,
@@ -57,6 +57,15 @@ export async function PATCH(request) {
                 enrollmentDate: new Date(),
                 status: 'Active'
             });
+
+            // Send email notification with the generated studentId
+            try {
+                const { sendStudentIdEmail } = await import('@/lib/mail');
+                await sendStudentIdEmail(newStudent.email, newStudent.name, newStudent.studentId);
+            } catch (emailError) {
+                console.error('Failed to send enrollment approval email:', emailError);
+                // We don't fail the whole request if email fails, but we log it
+            }
         }
 
         return NextResponse.json({ success: true, message: `Application ${status.toLowerCase()} successfully.` });
