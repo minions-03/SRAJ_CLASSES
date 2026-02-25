@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-export async function proxy(request) {
+export default async function proxy(request) {
     const { pathname } = request.nextUrl;
 
     // --- Protect admin dashboard routes ---
