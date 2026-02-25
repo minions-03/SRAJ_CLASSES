@@ -56,3 +56,48 @@ export async function sendStudentIdEmail(toEmail, studentName, studentId) {
         throw error;
     }
 }
+
+export async function sendContactEmail(senderName, senderEmail, message, senderPhone) {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('Email credentials missing.');
+        return;
+    }
+
+    const mailOptions = {
+        from: `"Contact Form - SRAJ Classes" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER, // Send to admin themselves
+        replyTo: senderEmail,
+        subject: `New Contact Form Submission from ${senderName}`,
+        html: `
+            <div style="font-family: sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
+                <div style="background-color: #0f172a; color: white; padding: 20px; text-align: center;">
+                    <h1 style="margin: 0;">New Inquiry Received</h1>
+                </div>
+                <div style="padding: 30px;">
+                    <p>You have received a new message from the SRAJ Classes contact form.</p>
+                    
+                    <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <p style="margin: 0 0 10px 0;"><strong>Name:</strong> ${senderName}</p>
+                        <p style="margin: 0 0 10px 0;"><strong>Email:</strong> ${senderEmail}</p>
+                        ${senderPhone ? `<p style="margin: 0 0 10px 0;"><strong>Phone:</strong> ${senderPhone}</p>` : ''}
+                        <p style="margin: 0;"><strong>Message:</strong></p>
+                        <p style="white-space: pre-wrap; margin-top: 10px; background: white; padding: 15px; border-radius: 4px; border: 1px solid #e2e8f0;">${message}</p>
+                    </div>
+                    
+                    <p style="font-size: 12px; color: #64748b; margin-top: 30px;">
+                        This email was sent from the landing page contact form. You can reply directly to this email to respond to the student.
+                    </p>
+                </div>
+            </div>
+        `,
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Contact email sent successfully:', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending contact email:', error);
+        throw error;
+    }
+}
