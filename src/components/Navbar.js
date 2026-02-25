@@ -25,8 +25,7 @@ const navItems = [
     { icon: Users, label: 'Students', href: '/students' },
     { icon: ReceiptIndianRupee, label: 'Collect Fee', href: '/billing' },
     { icon: FileText, label: 'Fee Invoices', href: '/invoices' },
-    { icon: BarChart3, label: 'Reports', href: '/reports' },
-    { icon: Settings, label: 'Settings', href: '/settings' },
+    { icon: UserCircle, label: 'Staff Payments', href: '/dashboard/staff-payments' },
 ];
 
 export function Navbar() {

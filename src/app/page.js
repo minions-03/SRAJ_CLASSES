@@ -117,21 +117,7 @@ export default function LandingPage() {
                                 <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" />
                             </button>
 
-                            {/* Login Options Buttons */}
-                            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                <Link
-                                    href="/student/login"
-                                    className="inline-flex items-center justify-center h-16 px-10 w-full sm:w-60 rounded-2xl text-lg font-black uppercase tracking-tight border-2 border-primary/20 text-slate-900 dark:text-white bg-white/50 dark:bg-slate-900/50 hover:bg-primary hover:text-white transition-all duration-300"
-                                >
-                                    Student Login
-                                </Link>
-                                <Link
-                                    href="/login"
-                                    className="inline-flex items-center justify-center h-16 px-10 w-full sm:w-60 rounded-2xl text-lg font-black uppercase tracking-tight border-2 border-primary text-primary bg-primary/10 hover:bg-primary hover:text-white transition-all duration-300"
-                                >
-                                    Admin Login
-                                </Link>
-                            </div>
+                            {/* Login Options Buttons Removed */}
                         </div>
                     </div>
                 </div>
