@@ -1,28 +1,36 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import connectMongo from '@/lib/mongodb';
+import dbConnect from '@/lib/mongodb';
 import Invoice from '@/models/Invoice';
 
-export async function GET() {
+async function getStudentFromToken(request) {
+    const token = (await cookies()).get('student_token')?.value;
+    if (!token) return null;
+
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('student_token')?.value;
-        if (!token) {
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(token, secret);
+        return payload;
+    } catch {
+        return null;
+    }
+}
+
+export async function GET(request) {
+    try {
+        await dbConnect();
+        const payload = await getStudentFromToken(request);
+        if (!payload) {
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-        const { payload } = await jwtVerify(token, secret);
+        const idToFind = typeof payload.id === 'object' ? payload.id.toString() : payload.id;
+        const invoices = await Invoice.find({ studentId: idToFind }).sort({ paymentDate: -1 });
 
-        await connectMongo();
-        const invoices = await Invoice.find({ studentId: payload.studentDbId })
-            .sort({ paymentDate: -1 })
-            .lean();
-
-        return NextResponse.json({ success: true, data: invoices });
+        return NextResponse.json({ success: true, invoices });
     } catch (error) {
-        console.error('Student Invoices API Error:', error);
-        return NextResponse.json({ success: false, message: 'Unauthorized or error' }, { status: 401 });
+        console.error('Student Invoices GET Error:', error);
+        return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
     }
 }

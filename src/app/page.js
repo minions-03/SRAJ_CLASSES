@@ -108,7 +108,7 @@ export default function LandingPage() {
                         <p className="text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto font-medium">
                             Transform your aspirations into achievements. Expert coaching for <span className="text-foreground font-bold underline decoration-primary decoration-2 underline-offset-4">SSC, Banking, Railways</span> and more.
                         </p>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <button
                                 onClick={() => setIsEnrollOpen(true)}
                                 className="group inline-flex items-center justify-center gap-3 px-10 h-16 rounded-2xl text-lg font-black uppercase tracking-tight w-full sm:w-64 cursor-pointer bg-primary text-white shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:opacity-90 transition-all"
@@ -116,9 +116,22 @@ export default function LandingPage() {
                                 Enroll Now
                                 <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" />
                             </button>
-                            <Link href="#contact" className="inline-flex items-center justify-center h-16 px-10 w-full sm:w-64 rounded-2xl text-lg font-bold border-2 border-primary text-primary bg-primary/10 hover:bg-primary hover:text-white transition-all duration-300">
-                                Contact Us
-                            </Link>
+
+                            {/* Login Options Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                                <Link
+                                    href="/student/login"
+                                    className="inline-flex items-center justify-center h-16 px-10 w-full sm:w-60 rounded-2xl text-lg font-black uppercase tracking-tight border-2 border-primary/20 text-slate-900 dark:text-white bg-white/50 dark:bg-slate-900/50 hover:bg-primary hover:text-white transition-all duration-300"
+                                >
+                                    Student Login
+                                </Link>
+                                <Link
+                                    href="/login"
+                                    className="inline-flex items-center justify-center h-16 px-10 w-full sm:w-60 rounded-2xl text-lg font-black uppercase tracking-tight border-2 border-primary text-primary bg-primary/10 hover:bg-primary hover:text-white transition-all duration-300"
+                                >
+                                    Admin Login
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

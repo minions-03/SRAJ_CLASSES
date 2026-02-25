@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import connectMongo from '@/lib/mongodb';
+import dbConnect from '@/lib/mongodb';
 import Student from '@/models/Student';
 
-async function getStudentFromToken() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('student_token')?.value;
+async function getStudentFromToken(request) {
+    const token = (await cookies()).get('student_token')?.value;
     if (!token) return null;
 
     try {
@@ -18,54 +17,54 @@ async function getStudentFromToken() {
     }
 }
 
-// GET: Return logged-in student's profile
-export async function GET() {
-    const payload = await getStudentFromToken();
-    if (!payload) {
-        return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-    }
-
+export async function GET(request) {
     try {
-        await connectMongo();
-        const student = await Student.findById(payload.studentDbId).select('-__v');
+        await dbConnect();
+        const payload = await getStudentFromToken(request);
+        if (!payload || !payload.id) {
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+        }
+
+        // Handle case where id might be an object or string
+        const idToFind = typeof payload.id === 'object' ? payload.id.toString() : payload.id;
+        const student = await Student.findById(idToFind);
+
         if (!student) {
             return NextResponse.json({ success: false, message: 'Student not found' }, { status: 404 });
         }
-        return NextResponse.json({ success: true, data: student });
+
+        return NextResponse.json({ success: true, student });
     } catch (error) {
-        console.error('Student ME GET Error:', error);
+        console.error('Student Profile GET Error:', error);
         return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
     }
 }
 
-// PUT: Update editable student fields
 export async function PUT(request) {
-    const payload = await getStudentFromToken();
-    if (!payload) {
-        return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-    }
-
     try {
-        const body = await request.json();
-        const allowedFields = ['name', 'email', 'phone', 'address'];
-        const updates = {};
-        for (const field of allowedFields) {
-            if (body[field] !== undefined) updates[field] = body[field];
+        await dbConnect();
+        const payload = await getStudentFromToken(request);
+        if (!payload) {
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        await connectMongo();
+        const data = await request.json();
+        const { name, email, phone, address } = data;
+
+        const idToFind = typeof payload.id === 'object' ? payload.id.toString() : payload.id;
         const student = await Student.findByIdAndUpdate(
-            payload.studentDbId,
-            { $set: updates },
+            idToFind,
+            { name, email, phone, address },
             { new: true, runValidators: true }
-        ).select('-__v');
+        );
 
         if (!student) {
             return NextResponse.json({ success: false, message: 'Student not found' }, { status: 404 });
         }
-        return NextResponse.json({ success: true, data: student });
+
+        return NextResponse.json({ success: true, student });
     } catch (error) {
-        console.error('Student ME PUT Error:', error);
+        console.error('Student Profile PUT Error:', error);
         return NextResponse.json({ success: false, message: error.message || 'Internal server error' }, { status: 500 });
     }
 }
