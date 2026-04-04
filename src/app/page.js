@@ -546,7 +546,7 @@ export default function LandingPage() {
                                     </div>
                                     <div>
                                         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Location</p>
-                                        <p className="text-sm font-bold text-foreground">Patna, Bihar, India</p>
+                                        <p className="text-sm font-bold text-foreground">Sobh, Gaya, Bihar</p>
                                     </div>
                                 </div>
                             </Reveal>
@@ -700,7 +700,7 @@ export default function LandingPage() {
                             <ul className="space-y-3.5 text-white/45 text-sm font-medium">
                                 <li className="flex items-center gap-2.5">
                                     <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                                    Patna, Bihar, India
+                                    Sobh, Gaya, Bihar
                                 </li>
                                 <li className="flex items-center gap-2.5">
                                     <Mail className="h-3.5 w-3.5 text-primary flex-shrink-0" />
