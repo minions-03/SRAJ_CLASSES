@@ -539,7 +539,7 @@ export default function LandingPage() {
                         {/* Contact Info */}
                         <div className="lg:col-span-2 space-y-4">
                             <Reveal className="reveal-left">
-                                <a href="mailto:srajgs2025@gmail.com" className="contact-info-card group cursor-pointer block no-underline">
+                                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=srajgs2025@gmail.com" target="_blank" rel="noopener noreferrer" className="contact-info-card group cursor-pointer block no-underline">
                                     <div className="h-11 w-11 rounded-xl bg-primary/8 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all flex-shrink-0">
                                         <Mail className="h-5 w-5" />
                                     </div>
