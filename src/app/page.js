@@ -24,7 +24,9 @@ import {
     Clock,
     TrendingUp,
     Shield,
-    Sparkles
+    Sparkles,
+    Copy,
+    Check
 } from 'lucide-react';
 
 const courses = [
@@ -193,6 +195,25 @@ export default function LandingPage() {
     const [contactForm, setContactForm] = useState({ name: '', email: '', phone: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null);
+    const [phoneCopied, setPhoneCopied] = useState(false);
+
+    const handleCopyPhone = async () => {
+        try {
+            await navigator.clipboard.writeText('+919155691893');
+            setPhoneCopied(true);
+            setTimeout(() => setPhoneCopied(false), 2000);
+        } catch {
+            // fallback
+            const el = document.createElement('textarea');
+            el.value = '+919155691893';
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            setPhoneCopied(true);
+            setTimeout(() => setPhoneCopied(false), 2000);
+        }
+    };
 
     const handleContactSubmit = async (e) => {
         e.preventDefault();
@@ -518,25 +539,33 @@ export default function LandingPage() {
                         {/* Contact Info */}
                         <div className="lg:col-span-2 space-y-4">
                             <Reveal className="reveal-left">
-                                <div className="contact-info-card group cursor-pointer">
+                                <a href="mailto:srajgs2025@gmail.com" className="contact-info-card group cursor-pointer block no-underline">
                                     <div className="h-11 w-11 rounded-xl bg-primary/8 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all flex-shrink-0">
                                         <Mail className="h-5 w-5" />
                                     </div>
-                                    <div>
+                                    <div className="flex-1">
                                         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Email</p>
                                         <p className="text-sm font-bold text-foreground">srajgs2025@gmail.com</p>
                                     </div>
-                                </div>
+                                    <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100" />
+                                </a>
                             </Reveal>
                             <Reveal className="reveal-left delay-100">
-                                <div className="contact-info-card group cursor-pointer">
+                                <div onClick={handleCopyPhone} className="contact-info-card group cursor-pointer">
                                     <div className="h-11 w-11 rounded-xl bg-primary/8 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all flex-shrink-0">
                                         <Phone className="h-5 w-5" />
                                     </div>
-                                    <div>
+                                    <div className="flex-1">
                                         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Phone</p>
                                         <p className="text-sm font-bold text-foreground">+91 91556 91893</p>
                                     </div>
+                                    {phoneCopied ? (
+                                        <span className="flex items-center gap-1 text-xs font-semibold text-emerald-500">
+                                            <Check className="h-3.5 w-3.5" /> Copied!
+                                        </span>
+                                    ) : (
+                                        <Copy className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100" />
+                                    )}
                                 </div>
                             </Reveal>
                             <Reveal className="reveal-left delay-200">
