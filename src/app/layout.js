@@ -1,30 +1,27 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastContainer } from "react-toastify";
 import { Analytics } from "@vercel/analytics/react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata = {
-  title: "SRAJ Competitive Classes - Management System",
-  description: "Management system for student data and fee billing for SRAJ Competitive Classes",
+  title: "SRAJ Competitive Classes — Expert Coaching for SSC, Banking, Railways",
+  description: "Transform your career aspirations into reality with SRAJ Classes. Expert coaching for SSC, Banking, Railways, and Police examinations in Patna with 98% success rate.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} antialiased`}
+        style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif' }}
       >
         <ThemeProvider
           attribute="class"

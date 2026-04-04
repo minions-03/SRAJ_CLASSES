@@ -58,7 +58,7 @@ StudentSchema.index({ createdAt: -1 });
 StudentSchema.pre('save', async function () {
     if (!this.studentId) {
         const year = new Date().getFullYear();
-        const counterId = `rollnumber_${year}`;
+        const counterId = `studentId_${year}`;
 
         try {
             const counter = await Counter.findOneAndUpdate(
