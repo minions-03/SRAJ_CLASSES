@@ -90,7 +90,6 @@ export default function InvoicesTab({ studentId }) {
                                     <td className="px-4 py-4 text-right">
                                         <Link
                                             href={`/billing/${invoice._id}`}
-                                            target="_blank"
                                             className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 px-3 py-1.5 rounded-lg transition-all"
                                         >
                                             <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

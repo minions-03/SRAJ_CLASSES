@@ -96,7 +96,7 @@ export default function InvoiceDetailPage() {
                             <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Fee Receipt</h2>
                         </div>
                         <p className="text-sm font-bold text-slate-900">No: {invoice.invoiceNumber}</p>
-                        <p className="text-xs text-slate-500 font-medium">Date: {new Date(invoice.paymentDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
+                        <p className="text-xs text-slate-500 font-medium">Date: {invoice.paymentDate ? new Date(invoice.paymentDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A'}</p>
                     </div>
                 </div>
 
@@ -134,8 +134,8 @@ export default function InvoiceDetailPage() {
                 <div className="space-y-6 mb-12 min-h-[150px]">
                     {displayItems.map((item, idx) => (
                         <div key={idx} className="flex justify-between items-center text-base font-medium text-slate-800">
-                            <p className="capitalize">{item.label.toLowerCase()}</p>
-                            <p className="font-bold text-lg">₹{item.amount.toLocaleString()}</p>
+                            <p className="capitalize">{item?.label?.toLowerCase() || 'Tuition Fees'}</p>
+                            <p className="font-bold text-lg">₹{(item?.amount || invoice?.amount || 0).toLocaleString()}</p>
                         </div>
                     ))}
                 </div>
