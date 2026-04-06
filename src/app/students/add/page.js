@@ -155,6 +155,7 @@ export default function AddStudentPage() {
                                         <option value="Railway (NTPC/Group D)">Railway (NTPC/Group D)</option>
                                         <option value="SSC CHSL/MTS">SSC CHSL/MTS</option>
                                         <option value="Police Exams">Police Exams</option>
+                                        <option value="Library">Library</option>
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>

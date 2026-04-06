@@ -1,6 +1,7 @@
 import dbConnect from '@/lib/mongodb';
 import Student from '@/models/Student';
 import { NextResponse } from 'next/server';
+import { sendStudentIdEmail } from '@/lib/mail';
 
 export async function GET(request) {
     await dbConnect();
@@ -52,6 +53,13 @@ export async function POST(request) {
     try {
         const body = await request.json();
         const student = await Student.create(body);
+        
+        try {
+            await sendStudentIdEmail(student.email, student.name, student.studentId);
+        } catch (emailError) {
+            console.error('Failed to send enrollment email:', emailError);
+        }
+
         return NextResponse.json({ success: true, data: student }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });

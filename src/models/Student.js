@@ -58,17 +58,30 @@ StudentSchema.index({ createdAt: -1 });
 StudentSchema.pre('save', async function () {
     if (!this.studentId) {
         const year = new Date().getFullYear();
-        const counterId = `studentId_${year}`;
 
         try {
-            const counter = await Counter.findOneAndUpdate(
-                { id: counterId },
-                { $inc: { seq: 1 } },
-                { returnDocument: 'after', upsert: true }
-            );
+            // Find the last enrolled student for the current year
+            const lastStudent = await this.constructor.findOne({ 
+                studentId: new RegExp(`^SRAJ/${year}/`) 
+            }).sort({ studentId: -1 });
 
-            const sequenceNumber = counter.seq.toString().padStart(3, '0');
+            let nextSeq = 1;
+            if (lastStudent && lastStudent.studentId) {
+                const parts = lastStudent.studentId.split('/');
+                if (parts.length === 3) {
+                    nextSeq = parseInt(parts[2], 10) + 1;
+                }
+            }
+
+            const sequenceNumber = nextSeq.toString().padStart(3, '0');
             this.studentId = `SRAJ/${year}/${sequenceNumber}`;
+
+            // Sync the counter so it's accurate if used elsewhere
+            await Counter.findOneAndUpdate(
+                { id: `studentId_${year}` },
+                { $set: { seq: nextSeq } },
+                { upsert: true }
+            );
         } catch (error) {
             console.error('Error in pre-save hook:', error);
             throw error;
