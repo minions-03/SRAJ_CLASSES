@@ -19,7 +19,8 @@ export function EnrollmentModal({ isOpen, onClose }) {
         "SSC CGL / CHSL",
         "Banking Exams",
         "Railway (RRB)",
-        "Police / Defense"
+        "Police / Defense",
+        "Library"
     ];
 
     // Lock body scroll when modal is open
