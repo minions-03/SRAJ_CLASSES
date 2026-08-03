@@ -91,8 +91,4 @@ You can start editing the app by modifying the files in `src/`. The page auto-up
 | Student Login (LMS) | `/student/login` |
 | Admin Login (Management) | `/login` |
  
-## 📬 Contact
- 
-- **Email:** srajgs2025@gmail.com
-- **Phone:** +91 91556 91893
-- **Location:** Sobh, Gaya, Bihar
+
