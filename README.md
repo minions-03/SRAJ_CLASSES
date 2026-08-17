@@ -81,15 +81,4 @@ bun dev
  
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
  
-You can start editing the app by modifying the files in `src/`. The page auto-updates as you edit.
- 
-## 🔑 Access Points
- 
-| Portal | URL |
-|---|---|
-| Public Website | `/` |
-| Student Login (LMS) | `/student/login` |
-| Admin Login (Management) | `/login` |
-
- 
 
